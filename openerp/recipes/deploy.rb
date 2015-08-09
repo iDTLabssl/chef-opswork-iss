@@ -40,11 +40,11 @@ node[:deploy].each do |application, deploy|
     not_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
   
-  bash "fix_setuptools" do
-      code <<-EOH
-      easy_install -U setuptools
-      EOH
-    end
+#  bash "fix_setuptools" do
+#      code <<-EOH
+#      easy_install -U setuptools
+#      EOH
+#    end
 
 # lets ensure that the data dir is writable
   bash "correct_directory_permission" do
@@ -80,34 +80,6 @@ node[:deploy].each do |application, deploy|
 #    python distribute_setup.py
 #    EOH
 #  end
-
-  template "#{deploy[:absolute_document_root]}openerp-wsgi.py" do
-    source "openerp-wsgi.py.erb"
-    owner deploy[:user]
-    group deploy[:group]
-    mode "0644"
-    action :create
-    variables(
-      :deploy_path => deploy[:absolute_document_root],
-      :log_file =>  "#{deploy[:deploy_to]}/shared/log/openerp.log",
-      :pid_file =>  "#{deploy[:deploy_to]}/shared/pids/openerp.pid",
-      :database => deploy[:database]
-    )    
-  end
-
-  template "#{deploy[:absolute_document_root]}openerp/conf/openerp.conf" do
-    source "openerp.conf.erb"
-    owner deploy[:user]
-    group deploy[:group]
-    mode "0644"
-    action :create
-    variables(
-      :deploy_path => deploy[:absolute_document_root],
-      :log_file =>  "#{deploy[:deploy_to]}/shared/log/openerp.log",
-      :pid_file =>  "#{deploy[:deploy_to]}/shared/pids/openerp.pid",
-      :database => deploy[:database]
-    ) 
-  end
 
   template "/home/#{deploy[:user]}/.openerp_serverrc" do
     source "openerp.conf.erb"
@@ -153,10 +125,34 @@ node[:deploy].each do |application, deploy|
     })
     notifies :reload, 'service[nginx]'
   end
+  
+  directory "/etc/nginx/ssh" do
+      mode 00755
+      action :create
+      not_if { ::File.exists?("/etc/nginx/ssh") }
+    end
+    
+    template "/etc/nginx/ssh/server.crt" do
+        source "server.crt.erb"
+        variables({
+          :ssl_crt => deploy[:ssl_certificate],
+        })
+      end
+      
+    template "/etc/nginx/ssh/server.pem" do
+        source "server.pem.erb"
+        variables({
+          :ssl_pem => deploy[:ssl_certificate_key],
+        })
+      end
 
   nginx_site "ngnix-openerp" do
     enable true
   end
+  
+  supervisor_service "openerp" do
+      action :start
+    end
  
 
 end

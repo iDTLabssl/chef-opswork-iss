@@ -21,8 +21,8 @@ limit_request = 8192
 limit_time_cpu = 60
 limit_time_real = 120
 list_db = False
-log_handler = [':INFO']
-log_level = info
+log_handler = <%=node[:openerp][:log_handler]%> 
+log_level = <%=node[:openerp][:log_level]%> 
 logfile = <%=@log_file %>
 logrotate = True
 longpolling_port = 8072
@@ -67,11 +67,3 @@ aws_s3_bucket  = <%=node[:openerp][:aws_s3_bucket]%>
 route53_zone_id = <%=node[:openerp][:route53_zone_id]%>
 domain  = <%=node[:openerp][:domain]%>
 elastic_ip = <%=node[:openerp][:elastic_ip]%>
-
-
-
-
-
-
-
-

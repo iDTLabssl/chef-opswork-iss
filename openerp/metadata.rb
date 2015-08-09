@@ -8,12 +8,11 @@ version          '0.1.0'
 
 depends "ohai"
 depends "supervisor"
-depends "gunicorn"
 depends "nginx"
 depends "postgresql"
 depends "java"
-depends "openoffice"
 depends "idt_infra_tools"
+depends 'tar'
 
 
 

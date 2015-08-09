@@ -11,9 +11,7 @@ include_recipe "nginx::repo"
 include_recipe "nginx"
 include_recipe "nginx::http_stub_status_module"
 include_recipe "python"
-include_recipe "openoffice::headless"
-include_recipe "openoffice::apps"
-
+include_recipe 'java'
 include_recipe 'postgresql::client'
 
 # lets set the python egg cache
@@ -54,7 +52,31 @@ end
     EOH
     not_if { ::File.exists?('/usr/lib/libjpeg.so') }
   end
+  
+# lets install openoffice
 
+directory "#{Chef::Config[:file_cache_path]}/openoffice" do
+  recursive true
+end
+
+tar_extract node['openerp']['openoffice_deb_url'] do
+  target_dir "#{Chef::Config[:file_cache_path]}/openoffice"
+  not_if { File.directory?("#{Chef::Config[:file_cache_path]}/openoffice/en-US") }
+end
+
+execute 'install-openoffice-debs' do
+  command "dpkg -i #{Chef::Config[:file_cache_path]}/openoffice/en-US/DEBS/*.deb"
+  not_if 'dpkg -s openoffice'
+end
+
+bash "link_openoffice" do
+    code <<-EOH
+    ln -s /opt/openoffice4/program/soffice /usr/bin
+    EOH
+    not_if { ::File.exists?('/usr/bin/soffice') }
+  end
+
+  
 # lets setup unoconv
 git "#{Chef::Config[:file_cache_path]}/unoconv" do
   repository "https://github.com/dagwieers/unoconv.git"
@@ -69,13 +91,10 @@ bash "install_unoconv_build" do
   EOH
 end
 
-#
-# supervisor_service "unoconv" do
-#   command "unoconv --listener"
-#   user 'nobody'
-#   autostart true
-#   autorestart true
-# end
 
-
-# lets copy the file the openoffice files over t init.d and add to run levels
+ supervisor_service "unoconv" do
+   command "unoconv --listener"
+   user 'nobody'
+   autostart true
+   autorestart true
+ end

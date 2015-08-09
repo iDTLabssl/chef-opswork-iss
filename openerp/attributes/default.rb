@@ -10,9 +10,15 @@ default[:openerp][:apt_packages] = %w[
   libevent-dev
   ghostscript
   poppler-utils
+  libxext6
+  fontconfig
+  python-pypdf
+  python-reportlab
+  python-yaml
+  python-ldap
+  python-pil
 ]
 
-  # git+https://github.com/tarzan0820/zkemapi.git@master
 default[:openerp][:pip_packages] = %w[
   raven
   raven-sanitize-openerp
@@ -20,6 +26,7 @@ default[:openerp][:pip_packages] = %w[
   wkhtmltopdf
   subprocess32
   boto  
+  oauthlib
   https://launchpad.net/aeroolib/trunk/1.0.0/+download/aeroolib.tar.gz
 ]
   
@@ -29,13 +36,13 @@ default[:openerp][:pip_packages] = %w[
 #default[:openerp][:database][:port] = node[:opsworks][:stack][:port]
 #default[:openerp][:database][:user] = node[:opsworks][:stack][:db_user]
 default[:openerp][:database][:maxconn] = 300
-default[:openerp][:servername] = 'hris.sl'
+default[:openerp][:servername] = 'iss.sl'
 
 
 default[:openerp][:data_dir] = '/mnt/data'
-default[:openerp][:db_filter] = '^%d$'
+default[:openerp][:db_filter] = '%h'
 default[:openerp][:debug_mode] = 'False'
-default[:openerp][:email_from] = 'no-reply@hris.sl'
+default[:openerp][:email_from] = 'no-reply@iss.sl'
 
 default[:openerp][:admin_pass] = 'supersecret'
 default[:openerp][:addon_path] = 'openerp/addons/'
@@ -46,11 +53,16 @@ default[:openerp][:route53_zone_id] = ''
 default[:openerp][:domain] = ''
 default[:openerp][:workers] = 3
 default[:openerp][:elastic_ip] = ''
+default[:openerp][:log_handler] = "[':INFO']"
+default[:openerp][:log_level] = 'info'
 default[:openerp][:static_http_document_root] = '/var/www/'
 default[:openerp][:static_http_url_prefix]= '/static'
-
+default[:openerp][:openoffice_deb_url]  = 'http://cdn.mirror.garr.it/sf/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
 
 default[:openerp][:update_command] = ''
+default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
+default[:openerp][:ssl_private] = '/etc/nginx/ssh/server.pem'
+
 
 override['supervisor']['inet_port'] = '9001'
 
@@ -58,9 +70,10 @@ override['nginx']['worker_processes'] = 4
 override['nginx']['default_site_enabled'] = false
 override['nginx']['gzip'] = 'on'
 
+
 override['postgresql']['enable_pgdg_apt'] = true 
 override['postgresql']['version'] = '9.3'
-override[:chef_ec2_ebs_snapshot][:description] = "data.hris.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
+override[:chef_ec2_ebs_snapshot][:description] = "iss.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
 #set the ff in stack settings
 # node['supervisor']['inet_username']
