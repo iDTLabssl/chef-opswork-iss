@@ -31,7 +31,7 @@ magic_shell_environment 'PYTHONPATH' do
 end
 
 magic_shell_environment 'UNO_PATH' do
-  value '/usr/lib/libreoffice/program/'
+  value '/opt/openoffice4/program/'
 end
 
 
@@ -97,4 +97,5 @@ end
    user 'nobody'
    autostart true
    autorestart true
+   environment :UNO_PATH => "/opt/openoffice4/program/"
  end
