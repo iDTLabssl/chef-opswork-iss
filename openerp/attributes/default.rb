@@ -19,6 +19,7 @@ default[:openerp][:apt_packages] = %w[
   python-pil
   nodejs
   npm
+  python-cups
 ]
 
 default[:openerp][:pip_packages] = %w[
@@ -38,7 +39,7 @@ default[:openerp][:pip_packages] = %w[
 #default[:openerp][:database][:port] = node[:opsworks][:stack][:port]
 #default[:openerp][:database][:user] = node[:opsworks][:stack][:db_user]
 default[:openerp][:database][:maxconn] = 300
-default[:openerp][:servername] = 'iss.sl'
+default[:openerp][:servername] = 'servername'
 
 
 default[:openerp][:data_dir] = '/mnt/data'

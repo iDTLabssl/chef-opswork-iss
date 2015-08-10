@@ -134,7 +134,7 @@ node[:deploy].each do |application, deploy|
 #    notifies :restart, "supervisor_service[openerp]"
 #  end
 
-  template "/etc/nginx/sites-enabled/ngnix-openerp" do
+  template "/etc/nginx/sites-enabled/nginx-openerp" do
     source "ngnix-openerp.conf.erb"
     variables({
       :deploy_path => deploy[:absolute_document_root],
