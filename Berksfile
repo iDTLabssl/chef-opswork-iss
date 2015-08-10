@@ -14,3 +14,4 @@ cookbook 'postfix-ses', git: 'git://github.com/tarzan0820/chef-postfix-ses.git'
 cookbook "postgresql"
 cookbook "s3cmd", git: 'git://github.com/fred/chef-s3cmd.git'
 cookbook 'java'
+cookbook 'tar'
