@@ -135,7 +135,7 @@ node[:deploy].each do |application, deploy|
 #  end
 
   template "/etc/nginx/sites-enabled/nginx-openerp" do
-    source "ngnix-openerp.conf.erb"
+    source "nginx-openerp.conf.erb"
     variables({
       :deploy_path => deploy[:absolute_document_root],
     })
@@ -162,7 +162,7 @@ node[:deploy].each do |application, deploy|
         })
       end
 
-  nginx_site "ngnix-openerp" do
+  nginx_site "nginx-openerp" do
     enable true
   end
   
