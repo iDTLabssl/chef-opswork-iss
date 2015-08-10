@@ -57,7 +57,7 @@ default[:openerp][:log_handler] = "[':INFO']"
 default[:openerp][:log_level] = 'info'
 default[:openerp][:static_http_document_root] = '/var/www/'
 default[:openerp][:static_http_url_prefix]= '/static'
-default[:openerp][:openoffice_deb_url]  = 'http://cdn.mirror.garr.it/sf/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
+default[:openerp][:openoffice_deb_url]  = 'http://garr.dl.sourceforge.net/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
 
 default[:openerp][:update_command] = ''
 default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
