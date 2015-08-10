@@ -28,6 +28,8 @@ default[:openerp][:pip_packages] = %w[
   boto  
   oauthlib
   https://launchpad.net/aeroolib/trunk/1.0.0/+download/aeroolib.tar.gz
+  pydot
+  six
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
