@@ -97,5 +97,5 @@ end
    user 'ubuntu'
    autostart true
    autorestart true
-   environment :HOME => "/home/ubuntu",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages":UNO_PATH => "/opt/openoffice4/program/"
+   environment :HOME => "/home/ubuntu",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages",:UNO_PATH => "/opt/openoffice4/program/"
  end
