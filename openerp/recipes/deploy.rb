@@ -58,11 +58,27 @@ node[:deploy].each do |application, deploy|
     end
   end
 
-  script 'execute_setup' do
+  script 'install_requirements' do
     interpreter "bash"
     user "root"
     cwd deploy[:absolute_document_root]
-    code "python setup.py install"
+    code "pip install -r requirements.txt"
+  end
+
+  bash "correct_node_link" do
+    code <<-EOH
+    ln -s /usr/bin/nodejs /usr/bin/node
+    EOH
+    not_if { ::File.exists?('/usr/bin/node') }
+  end
+
+  script 'install_less' do
+    interpreter "bash"
+    user "root"
+    cwd deploy[:absolute_document_root]
+    code <<-EOH
+    npm install -g less less-plugin-clean-css
+    EOH
   end
 
   script 'chmod_gevent' do
