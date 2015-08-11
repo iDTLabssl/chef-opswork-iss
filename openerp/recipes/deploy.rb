@@ -6,11 +6,11 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-include_recipe "supervisor"
+#include_recipe "supervisor"
 include_recipe "openerp"
-include_recipe "nginx::repo"
-include_recipe "nginx"
-include_recipe "nginx::http_stub_status_module"
+#include_recipe "nginx::repo"
+#include_recipe "nginx"
+#include_recipe "nginx::http_stub_status_module"
 
 include_recipe 'deploy'
 
