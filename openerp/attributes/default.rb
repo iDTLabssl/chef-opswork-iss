@@ -48,7 +48,7 @@ default[:openerp][:debug_mode] = 'False'
 default[:openerp][:email_from] = 'no-reply@iss.sl'
 
 default[:openerp][:admin_pass] = 'supersecret'
-default[:openerp][:addon_path] = 'openerp/addons/'
+default[:openerp][:addons_path] = 'openerp/addons/'
 default[:openerp][:sentry_dsn] = 'secret'
 default[:openerp][:aws_access_key] = 'secret'
 default[:openerp][:aws_secret_key] = 'secret'
