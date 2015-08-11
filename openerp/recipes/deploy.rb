@@ -58,6 +58,10 @@ node[:deploy].each do |application, deploy|
     end
   end
 
+  service 'nginx' do
+    supports :status => true, :restart => true, :reload => true
+  end
+
   script 'install_requirements' do
     interpreter "bash"
     user "root"
@@ -139,7 +143,7 @@ node[:deploy].each do |application, deploy|
     variables({
       :deploy_path => deploy[:absolute_document_root],
     })
-    notifies :reload, 'service[nginx]'
+    notifies :reload, "service[nginx]",
   end
   
   directory "/etc/nginx/ssh" do
