@@ -143,7 +143,7 @@ node[:deploy].each do |application, deploy|
     variables({
       :deploy_path => deploy[:absolute_document_root],
     })
-    notifies :reload, "service[nginx]",
+    notifies :reload, "service[nginx]"
   end
   
   directory "/etc/nginx/ssh" do
