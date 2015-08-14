@@ -15,6 +15,3 @@ cookbook "postgresql"
 cookbook "s3cmd", git: 'git://github.com/fred/chef-s3cmd.git'
 cookbook 'java'
 cookbook 'tar'
-cookbook "wkhtmltopdf", git: 'git://github.com/bflad/chef-wkhtmltopdf.git'
-
-

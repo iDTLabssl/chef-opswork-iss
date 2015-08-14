@@ -62,6 +62,7 @@ default[:openerp][:log_level] = 'info'
 default[:openerp][:static_http_document_root] = '/var/www/'
 default[:openerp][:static_http_url_prefix]= '/static'
 default[:openerp][:openoffice_deb_url]  = 'http://garr.dl.sourceforge.net/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
+default[:openerp][:wkhtmltopdf_deb_url]  = "http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb"
 
 default[:openerp][:update_command] = ''
 default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
@@ -79,7 +80,7 @@ override['postgresql']['enable_pgdg_apt'] = true
 override['postgresql']['version'] = '9.3'
 override[:chef_ec2_ebs_snapshot][:description] = "iss.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
-override['wkhtmltopdf']['mirror_url']  = 'http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1.tar.bz2'
+
 
 
 #set the ff in stack settings

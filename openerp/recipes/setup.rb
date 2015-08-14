@@ -12,8 +12,7 @@ include_recipe "nginx"
 include_recipe "nginx::http_stub_status_module"
 include_recipe "python"
 include_recipe 'java'
-include_recipe 'postgresql::client'
-include_recipe 'wkhtmltopdf'
+include_recipe 'postgresql::client'zz
 
 # lets set the python egg cache
 directory "/tmp/python-eggs" do
@@ -77,7 +76,20 @@ bash "link_openoffice" do
     not_if { ::File.exists?('/usr/bin/soffice') }
   end
 
-  
+
+# lets install wkhtmltopdf
+
+remote_file "#{Chef::Config[:file_cache_path]}/wkhtmltox.deb" do
+  source node['openerp']['wkhtmltopdf_deb_url']
+  mode 0644
+#  checksum "" # PUT THE SHA256 CHECKSUM HERE
+end
+
+dpkg_package "wkhtmltopdf" do
+  source "#{Chef::Config[:file_cache_path]}/wkhtmltox.deb"
+  action :install
+end
+
 # lets setup unoconv
 git "#{Chef::Config[:file_cache_path]}/unoconv" do
   repository "https://github.com/dagwieers/unoconv.git"

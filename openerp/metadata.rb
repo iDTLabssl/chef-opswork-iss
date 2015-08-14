@@ -13,7 +13,6 @@ depends "postgresql"
 depends "java"
 depends "idt_infra_tools"
 depends 'tar'
-depends 'wkhtmltopdf'
 
 
 
