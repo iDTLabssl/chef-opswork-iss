@@ -7,6 +7,11 @@ upstream app_server_im {
 }
 
 server {
+    server_name  www.<%=node[:openerp][:servername]%>;
+    rewrite ^(.*) http://<%=node[:openerp][:servername]%>$1 permanent;
+}
+
+server {
 	listen 80 default;
 	client_max_body_size 100m;
 	server_name <%=node[:openerp][:servername]%>;
