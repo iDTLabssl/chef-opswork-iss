@@ -116,7 +116,7 @@ node[:deploy].each do |application, deploy|
   end
 
   supervisor_service "openerp" do
-    command "python ./openerp-server"
+    command "python ./odoo.py"
     directory deploy[:absolute_document_root]
     user deploy[:user]
     autostart true

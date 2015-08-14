@@ -31,6 +31,7 @@ default[:openerp][:pip_packages] = %w[
   boto  
   oauthlib
   https://launchpad.net/aeroolib/trunk/1.0.0/+download/aeroolib.tar.gz
+  egenix-mx-base
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
@@ -38,7 +39,7 @@ default[:openerp][:pip_packages] = %w[
 #default[:openerp][:database][:password] = ''
 #default[:openerp][:database][:port] = node[:opsworks][:stack][:port]
 #default[:openerp][:database][:user] = node[:opsworks][:stack][:db_user]
-default[:openerp][:database][:maxconn] = 300
+default[:openerp][:database][:maxconn] = 30
 default[:openerp][:servername] = 'servername'
 
 
