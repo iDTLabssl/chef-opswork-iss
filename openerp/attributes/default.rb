@@ -79,6 +79,9 @@ override['postgresql']['enable_pgdg_apt'] = true
 override['postgresql']['version'] = '9.3'
 override[:chef_ec2_ebs_snapshot][:description] = "iss.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
+override['wkhtmltopdf']['mirror_url']  = 'http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1.tar.bz2'
+
+
 #set the ff in stack settings
 # node['supervisor']['inet_username']
 # node['supervisor']['inet_password']
