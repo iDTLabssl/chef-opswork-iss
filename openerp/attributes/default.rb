@@ -20,6 +20,12 @@ default[:openerp][:apt_packages] = %w[
   nodejs
   npm
   python-cups
+  libfontenc1 
+  libxfont1  
+  xfonts-75dpi 
+  xfonts-base 
+  xfonts-encodings 
+  xfonts-utils
 ]
 
 default[:openerp][:pip_packages] = %w[

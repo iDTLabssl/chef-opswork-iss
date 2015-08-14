@@ -90,6 +90,15 @@ dpkg_package "wkhtmltopdf" do
   action :install
 end
 
+bash "link_wkhtmltopdf" do
+    code <<-EOH
+    cp /usr/local/bin/wkhtmltopdf /usr/bin
+    cp /usr/local/bin/wkhtmltoimage /usr/bin
+    EOH
+    not_if { ::File.exists?('/usr/bin/wkhtmltopd') }
+  end
+  
+
 # lets setup unoconv
 git "#{Chef::Config[:file_cache_path]}/unoconv" do
   repository "https://github.com/dagwieers/unoconv.git"
