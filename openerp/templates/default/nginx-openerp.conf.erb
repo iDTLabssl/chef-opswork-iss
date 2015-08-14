@@ -1,37 +1,75 @@
 upstream app_server {
-	server unix:/tmp/gunicorn.sock fail_timeout=0;
-	# For a TCP configuration:
-	# server 192.168.0.7:8000 fail_timeout=0;
+	server 127.0.0.1:8069 weight=1 fail_timeout=30s;
+}
+
+upstream app_server_im {
+	server 127.0.0.1:8072 weight=1 fail_timeout=30s;
 }
 
 server {
 	listen 80 default;
-	client_max_body_size 10G;
+	client_max_body_size 100m;
 	server_name <%=node[:openerp][:servername]%>;
 
 	keepalive_timeout 5;
 
-	# path for static files
-	root <%=node[:openerp][:static_http_document_root]%>;
+	#access_log                 /var/log/odoo/nginx-access.log;
+  	#error_log                  /var/log/odoo/nginx-error.log;
 
+	# increase proxy buffer to handle some OpenERP web requests
+  	proxy_buffers              16 64k;
+  	proxy_buffer_size          128k;
+
+	# force timeouts if the backend dies
+  	proxy_next_upstream        error timeout invalid_header http_500 http_502 http_503;
+
+	# set headers
+        proxy_set_header           Host $host;
+        proxy_set_header           X-Real-IP $remote_addr;
+        proxy_set_header           X-Forward-For $proxy_add_x_forwarded_for;
+        proxy_set_header           X-Forwarded-Proto $scheme;
+
+	# by default, do not forward anything
+         proxy_redirect             off;
+
+         gzip                       on;
+         gzip_min_length            1100;
+         gzip_buffers               4 32k;
+         gzip_types                 text/plain application/x-javascript text/xml text/css;
+         gzip_vary                  on;
+  
 	location / {
-	    # checks for static file, if not found proxy to app
-	    try_files $uri @proxy_to_app;
-	}
+            proxy_pass               http://app_server;
+        }
 
-	location @proxy_to_app {
-	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	    proxy_set_header Host $http_host;
-	    proxy_set_header X-Real-IP $remote_addr;
-	    proxy_set_header X-Scheme $scheme;
-	    proxy_redirect off;
-	    proxy_pass   http://localhost:8069;
-	}
+        location /longpolling {
+            proxy_pass              http://app_server_im;
+        }
+
+
 
 	error_page 500 502 503 504 /500.html;
 	location = /500.html {
 	    root <%=node[:openerp][:static_http_document_root]%>;
 	}
+
+	# cache some static data in memory for 60mins.
+	  # under heavy load this should relieve stress on the OpenERP web interface a bit.
+	  location ~* /web/static/ {
+	    proxy_cache_valid       200 60m;
+	    proxy_buffering         on;
+	    expires                 864000;
+	    proxy_pass              http://app_server;
+	  }
+
+	# cache some static data in memory for 60mins.
+	  # under heavy load this should relieve stress on the OpenERP web interface a bit.
+	  location ~* /website/static/ {
+	    proxy_cache_valid       200 60m;
+	    proxy_buffering         on;
+	    expires                 864000;
+	    proxy_pass              http://app_server;
+	  }
 
 }
 
