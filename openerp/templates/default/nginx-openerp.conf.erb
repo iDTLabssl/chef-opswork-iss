@@ -55,21 +55,22 @@ server {
 
   include h5bp/directive-only/ssl.conf;
 
-  # Path for static files
-  root /var/www/;
 
   #Specify a charset
   charset utf-8;
 
   # Custom 404 page
-  error_page 404 500 502 503 504 404/index.html;
+  error_page 404 500 502 503 504 /500.html;
+location = /500.html {
+    root <%=node[:openerp][:static_http_document_root]%>;
+}
 
   # Include the basic h5bp config set
   include h5bp/basic.conf;
 
   # Include the spdy h5bp config set
-  include h5bp/directive/spdy.conf;
+  include h5bp/directive-only/spdy.conf;
 
   # Include the spdy h5bp config set
-  include h5bp/directive/cache-file-descriptors.conf;
+  include h5bp/directive-only/cache-file-descriptors.conf;
 }
