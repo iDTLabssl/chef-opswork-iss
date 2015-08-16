@@ -147,6 +147,12 @@ node[:deploy].each do |application, deploy|
 #  end
 
   # let's configure nginx
+  bash "install_h5bp_1" do
+    cwd '/etc'
+    code <<-EOH
+     rm -R nginx
+     EOH
+  end
   remote_directory '/etc/nginx' do
     source 'nginx'
     owner 'root'
@@ -163,7 +169,7 @@ node[:deploy].each do |application, deploy|
     notifies :reload, "service[nginx]"
   end
 
-  bash "install_h5bp" do
+  bash "install_h5bp_2" do
     cwd '/etc/nginx'
     code <<-EOH
     ln -s sites-available/#{node[:openerp][:servername]}.conf sites-enabled/#{node[:openerp][:servername]}.conf
