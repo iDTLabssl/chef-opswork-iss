@@ -147,7 +147,7 @@ node[:deploy].each do |application, deploy|
 #  end
 
   # let's configure nginx
-  bash "install_h5bp_1" do
+  bash "install_h5bp" do
     code <<-EOH
      rm -R /etc/nginx
      EOH
@@ -167,15 +167,6 @@ node[:deploy].each do |application, deploy|
     })
     notifies :reload, "service[nginx]"
   end
-
-  bash "install_h5bp_2" do
-    cwd '/etc/nginx'
-    code <<-EOH
-    ln -s /etc/nginx/sites-available/#{node[:openerp][:servername]}.conf /etc/nginx/sites-enabled/#{node[:openerp][:servername]}.conf
-     EOH
-     not_if { ::File.exists?("sites-enabled/#{node[:openerp][:servername]}.conf")}
-  end
-
    
     template "/etc/nginx/default_ssl.crt" do
         source "server.crt.erb"
@@ -191,7 +182,7 @@ node[:deploy].each do |application, deploy|
         })
       end
 
-  nginx_site "nginx-openerp" do
+  nginx_site "#{node[:openerp][:servername]}.conf" do
     enable true
   end
 
