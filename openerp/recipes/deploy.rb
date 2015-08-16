@@ -197,7 +197,7 @@ node[:deploy].each do |application, deploy|
     action :create
     not_if { ::File.exists?(node[:openerp][:static_http_document_root]) }
   end
-  remote_directory "#{node[:openerp][:static_http_document_root]}/404" do
+  remote_directory "#{node[:openerp][:static_http_document_root]}404" do
     source '404'
     owner node[:openerp][:user]
     group node[:openerp][:group]
