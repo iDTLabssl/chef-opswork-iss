@@ -148,9 +148,8 @@ node[:deploy].each do |application, deploy|
 
   # let's configure nginx
   bash "install_h5bp_1" do
-    cwd '/etc'
     code <<-EOH
-     rm -R nginx
+     rm -R /etc/nginx
      EOH
   end
   remote_directory '/etc/nginx' do
@@ -172,7 +171,7 @@ node[:deploy].each do |application, deploy|
   bash "install_h5bp_2" do
     cwd '/etc/nginx'
     code <<-EOH
-    ln -s sites-available/#{node[:openerp][:servername]}.conf sites-enabled/#{node[:openerp][:servername]}.conf
+    ln -s /etc/nginx/sites-available/#{node[:openerp][:servername]}.conf /etc/nginx/sites-enabled/#{node[:openerp][:servername]}.conf
      EOH
      not_if { ::File.exists?("sites-enabled/#{node[:openerp][:servername]}.conf")}
   end
