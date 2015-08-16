@@ -39,6 +39,14 @@ node[:deploy].each do |application, deploy|
     action :create
     not_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
+
+  # create static web directory its not there
+  directory 'var/www' do
+    owner deploy[:user]
+    group deploy[:group]
+    mode 00755
+    action :create
+  end
   
 #  bash "fix_setuptools" do
 #      code <<-EOH
@@ -138,28 +146,39 @@ node[:deploy].each do |application, deploy|
 #    notifies :restart, "supervisor_service[openerp]"
 #  end
 
-  template "/etc/nginx/sites-enabled/nginx-openerp" do
+  # let's configure nginx
+  remote_directory '/etc/nginx' do
+    source 'nginx'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    action :create
+  end
+
+  template "/etc/nginx/sites-available/#{node[:openerp][:servername]}.conf" do
     source "nginx-openerp.conf.erb"
     variables({
       :deploy_path => deploy[:absolute_document_root],
     })
     notifies :reload, "service[nginx]"
   end
-  
-  directory "/etc/nginx/ssh" do
-      mode 00755
-      action :create
-      not_if { ::File.exists?("/etc/nginx/ssh") }
-    end
-    
-    template "/etc/nginx/ssh/server.crt" do
+
+  bash "install_h5bp" do
+    cwd '/etc/nginx'
+    code <<-EOH
+    ln -s /etc/nginx/sites-available/#{node[:openerp][:servername]} /etc/nginx/sites-enabled/#{node[:openerp][:servername]}
+    EOH
+  end
+
+   
+    template "/etc/nginx/default_ssl.crt" do
         source "server.crt.erb"
         variables({
           :ssl_crt => deploy[:ssl_certificate],
         })
       end
       
-    template "/etc/nginx/ssh/server.pem" do
+    template "/etc/nginx/default_ssl.key" do
         source "server.pem.erb"
         variables({
           :ssl_pem => deploy[:ssl_certificate_key],
@@ -168,6 +187,22 @@ node[:deploy].each do |application, deploy|
 
   nginx_site "nginx-openerp" do
     enable true
+  end
+
+  # let's get some of our statics in place
+  directory node[:openerp][:static_http_document_root] do
+    owner node[:openerp][:user]
+    group node[:openerp][:group]
+    mode 00755
+    action :create
+    not_if { ::File.exists?(node[:openerp][:static_http_document_root]) }
+  end
+  remote_directory "#{node[:openerp][:static_http_document_root]}/404" do
+    source '404'
+    owner node[:openerp][:user]
+    group node[:openerp][:group]
+    mode '0755'
+    action :create
   end
   
   supervisor_service "openerp" do
