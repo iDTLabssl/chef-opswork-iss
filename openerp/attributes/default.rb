@@ -48,6 +48,8 @@ default[:openerp][:pip_packages] = %w[
 default[:openerp][:database][:maxconn] = 30
 default[:openerp][:servername] = 'servername'
 
+default[:openerp][:nginx_authuser] = 'user'
+default[:openerp][:nginx_authpass] = 'pass'
 
 default[:openerp][:data_dir] = '/mnt/data'
 default[:openerp][:db_filter] = '%h'

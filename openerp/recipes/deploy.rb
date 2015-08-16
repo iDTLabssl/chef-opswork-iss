@@ -159,16 +159,11 @@ node[:deploy].each do |application, deploy|
     mode '0755'
     action :create
   end
+  template "/etc/nginx/.htpasswd" do
+        source "htpasswd.erb"
+      end
 
-  template "/etc/nginx/sites-available/#{node[:openerp][:servername]}.conf" do
-    source "nginx-openerp.conf.erb"
-    variables({
-      :deploy_path => deploy[:absolute_document_root],
-    })
-    notifies :reload, "service[nginx]"
-  end
-   
-    template "/etc/nginx/default_ssl.crt" do
+  template "/etc/nginx/default_ssl.crt" do
         source "server.crt.erb"
         variables({
           :ssl_crt => deploy[:ssl_certificate],
@@ -182,7 +177,17 @@ node[:deploy].each do |application, deploy|
         })
       end
 
-  nginx_site "#{node[:openerp][:servername]}.conf" do
+  
+
+  template "/etc/nginx/sites-available/#{node[:openerp][:servername]}.conf" do
+    source "nginx-openerp.conf.erb"
+    variables({
+      :deploy_path => deploy[:absolute_document_root],
+    })
+    notifies :reload, "service[nginx]"
+  end
+   
+    nginx_site "#{node[:openerp][:servername]}.conf" do
     enable true
   end
 

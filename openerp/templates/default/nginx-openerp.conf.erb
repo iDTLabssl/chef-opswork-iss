@@ -37,7 +37,7 @@ server {
   # listen [::]:443 ssl spdy deferred;  # for Linux
   # listen 443 ssl spdy deferred;  # for Linux
   listen [::]:443 ssl spdy;
-  listen 443 ssl spdy;
+  listen 443 ssl spdy;ht
 
   # The host name to respond to
   server_name <%=node[:openerp][:servername]%>;
@@ -60,10 +60,15 @@ server {
   charset utf-8;
 
   # Custom 404 page
-  error_page 404 500 502 503 504 /500.html;
+  error_page 500 502 503 504 /500.html;
 location = /500.html {
-    root <%=node[:openerp][:static_http_document_root]%>;
+    root <%=node[:openerp][:static_http_document_root]%>404/;
 }
+
+location ~* /web/database/manager {
+        auth_basic "Restricted Area Login";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
 
   # Include the basic h5bp config set
   include h5bp/basic.conf;
