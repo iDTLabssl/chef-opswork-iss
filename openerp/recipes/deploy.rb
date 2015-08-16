@@ -166,8 +166,9 @@ node[:deploy].each do |application, deploy|
   bash "install_h5bp" do
     cwd '/etc/nginx'
     code <<-EOH
-    ln -s /etc/nginx/sites-available/#{node[:openerp][:servername]} /etc/nginx/sites-enabled/#{node[:openerp][:servername]}
-    EOH
+    ln -s sites-available/#{node[:openerp][:servername]}.conf sites-enabled/#{node[:openerp][:servername]}.conf
+     EOH
+     not_if { ::File.exists?("sites-enabled/#{node[:openerp][:servername]}.conf")}
   end
 
    
