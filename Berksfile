@@ -15,3 +15,4 @@ cookbook "postgresql"
 cookbook "s3cmd", git: 'git://github.com/fred/chef-s3cmd.git'
 cookbook 'java'
 cookbook 'tar'
+cookbook "sumologic", git: 'git://github.com/PagerDuty/chef-sumologic.git'
