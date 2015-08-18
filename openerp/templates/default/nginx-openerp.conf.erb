@@ -9,11 +9,11 @@ server {
   listen 80;
 
   # listen on both hosts
-  server_name <%=node[:opsworks][:instance][:ip]%> <%=node[:openerp][:servername]%> www.<%=node[:openerp][:servername]%>;
+  server_name <%=node[:opsworks][:instance][:ip]%> *.<%=node[:openerp][:servername]%>;
 
   # and redirect to the https host (declared below)
   # avoiding http://www -> https://www -> https:// chain.
-  return 301 https://<%=node[:openerp][:servername]%>$request_uri;
+  return 301 https://$host$request_uri$is_args$args;
 }
 
 server {
@@ -26,7 +26,7 @@ server {
   include h5bp/directive-only/ssl.conf;
 
   # and redirect to the non-www host (declared below)
-  return 301 https://<%=node[:openerp][:servername]%>$request_uri;
+  return 301 https://$host$request_uri$is_args$args;
 }
 
 
@@ -40,7 +40,7 @@ server {
   listen 443 ssl spdy;
 
   # The host name to respond to
-  server_name <%=node[:openerp][:servername]%>;
+  server_name *.<%=node[:openerp][:servername]%>;
 
    location / {
      

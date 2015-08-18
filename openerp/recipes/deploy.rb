@@ -48,6 +48,7 @@ node[:deploy].each do |application, deploy|
     action :create
   end
   
+  
 #  bash "fix_setuptools" do
 #      code <<-EOH
 #      easy_install -U setuptools
@@ -157,6 +158,13 @@ node[:deploy].each do |application, deploy|
     owner 'root'
     group 'root'
     mode '0755'
+    action :create
+  end
+	# nginx log directory
+  directory '/etc/nginx/logs/' do
+    owner deploy[:user]
+    group deploy[:group]
+    mode 00755
     action :create
   end
   template "/etc/nginx/.htpasswd" do
