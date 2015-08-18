@@ -1,3 +1,90 @@
+sumologic_json_template = <<-eos
+{
+    "api.version": "v1",
+    "sources": [
+        {
+            "name": "Syslog File",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "OS/Linux/System",
+            "pathExpression": "/var/log/syslog"
+        },
+        {
+            "name": "Messages",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "OS/Linux/System",
+            "pathExpression": "/var/log/messages"
+        },
+        {
+            "name": "Nginx",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "Nginx",
+            "pathExpression": "/etc/nginx/logs/*.log"
+        },
+         {
+            "name": "Nginx",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "Nginx",
+            "pathExpression": "/var/log/nginx/*.log"
+        },
+        {
+            "name": "Mail",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "OS/Linux/Mail",
+            "pathExpression": "/var/log/mail.log"
+        },
+        {
+            "name": "Odoo",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "Odoo",
+            "pathExpression": "/srv/www/idt_software_services/shared/log/openerp.log"
+        },
+      
+        {
+            "name": "Secure",
+            "sourceType": "LocalFile",
+            "automaticDateParsing": true,
+            "multilineProcessingEnabled": false,
+            "useAutolineMatching": true,
+            "forceTimeZone": false,
+            "timeZone": "UTC",
+            "category": "OS/Linux/Security",
+            "pathExpression": "/var/log/auth.log"
+        }
+    ]
+}
+
+eos
+
 default[:openerp][:apt_packages] = %w[
   libssl-dev
   libsasl2-dev
@@ -88,7 +175,7 @@ override['postgresql']['enable_pgdg_apt'] = true
 override['postgresql']['version'] = '9.3'
 override[:chef_ec2_ebs_snapshot][:description] = "iss.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
-
+override['sumologic']['json_template'] = sumologic_json_template 
 
 
 #set the ff in stack settings
