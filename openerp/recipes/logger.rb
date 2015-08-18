@@ -1,24 +1,9 @@
 include_recipe "openerp"
 include_recipe 'sumologic'
 
-sumo_source 'syslog' do
-  path '/var/log/syslog'
-  category 'syslog'
-end
-
 sumo_source 'dmesg' do
   path '/var/log/dmesg '
   category 'dmesg'
-end
-
-sumo_source 'messages' do
-  path '/var/log/messages'
-  category 'messages'
-end
-
-sumo_source 'secure' do
-  path '/var/log/secure'
-  category 'secure'
 end
 
 sumo_source 'nginx-access' do
@@ -36,10 +21,6 @@ sumo_source 'openerp' do
   category 'openerp'
 end
 
-sumo_source 'auth' do
-  path '/var/log/auth.log'
-  category 'auth'
-end
 
 sumo_source 'kern' do
   path '/var/log/kern.log'
