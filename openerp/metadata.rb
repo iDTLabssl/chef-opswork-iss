@@ -13,7 +13,7 @@ depends "postgresql"
 depends "java"
 depends "idt_infra_tools"
 depends 'tar'
-depends 'sumologic'
+depends 'sumologic-collector'
 
 
 
