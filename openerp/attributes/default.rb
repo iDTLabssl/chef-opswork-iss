@@ -38,7 +38,7 @@ default[:openerp][:pip_packages] = %w[
   oauthlib
   https://launchpad.net/aeroolib/trunk/1.0.0/+download/aeroolib.tar.gz
   egenix-mx-base
-  matplotlib
+
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
