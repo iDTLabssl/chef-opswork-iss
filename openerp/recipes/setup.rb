@@ -95,7 +95,25 @@ bash "link_wkhtmltopdf" do
     cp /usr/local/bin/wkhtmltopdf /usr/bin
     cp /usr/local/bin/wkhtmltoimage /usr/bin
     EOH
-    not_if { ::File.exists?('/usr/bin/wkhtmltopd') }
+    not_if { ::File.exists?('/usr/bin/wkhtmltopdf') }
+  end
+
+# install some necessary missing fonts
+remote_file "#{Chef::Config[:file_cache_path]}/pfbfer.zip" do
+  source 'http://www.reportlab.com/ftp/fonts/pfbfer.zip'
+  mode 0644
+end
+
+directory '/usr/lib/python2.7/dist-packages/reportlab/fonts/' do
+    mode 00755
+    action :create
+    not_if { ::File.exists?('/usr/lib/python2.7/dist-packages/reportlab/fonts/') }
+  end
+
+bash "unzip_fonts" do
+    code <<-EOH
+    unzip -o #{Chef::Config[:file_cache_path]}/pfbfer.zip -d /usr/lib/python2.7/dist-packages/reportlab/fonts/
+    EOH
   end
   
 
