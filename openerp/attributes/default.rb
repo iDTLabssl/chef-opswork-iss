@@ -72,7 +72,7 @@ default[:openerp][:log_handler] = "[':WARNING']"
 default[:openerp][:log_level] = 'info'
 default[:openerp][:static_http_document_root] = '/var/www/'
 default[:openerp][:static_http_url_prefix]= '/static'
-default[:openerp][:openoffice_deb_url]  = 'http://garr.dl.sourceforge.net/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
+default[:openerp][:openoffice_deb_url]  = 'http://freefr.dl.sourceforge.net/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
 default[:openerp][:wkhtmltopdf_deb_url]  = "http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
 
 default[:openerp][:update_command] = ''
