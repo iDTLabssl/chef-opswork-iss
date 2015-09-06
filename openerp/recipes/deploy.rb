@@ -175,6 +175,7 @@ node[:deploy].each do |application, deploy|
         source "server.crt.erb"
         variables({
           :ssl_crt => deploy[:ssl_certificate],
+	  :ssl_crt_ca => deploy[:ssl_certificate_ca],
         })
       end
       
