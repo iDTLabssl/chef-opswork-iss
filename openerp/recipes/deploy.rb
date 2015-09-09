@@ -41,7 +41,7 @@ node[:deploy].each do |application, deploy|
   end
 
   # create static web directory its not there
-  directory 'var/www' do
+  directory '/var/www' do
     owner deploy[:user]
     group deploy[:group]
     mode 00755

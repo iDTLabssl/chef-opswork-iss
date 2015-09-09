@@ -15,18 +15,18 @@ debug_mode = <%=node[:openerp][:debug_mode]%>
 demo = {}
 email_from = <%=node[:openerp][:email_from]%>
 import_partial = False
-limit_memory_hard = 805306368
-limit_memory_soft = 671088640
+limit_memory_hard = 1805306368
+limit_memory_soft = 1671088640
 limit_request = 8192
-limit_time_cpu = 60
-limit_time_real = 120
+limit_time_cpu = 120
+limit_time_real = 240
 list_db = False
 log_handler = <%=node[:openerp][:log_handler]%> 
 log_level = <%=node[:openerp][:log_level]%> 
 logfile = <%=@log_file %>
 logrotate = True
 longpolling_port = 8072
-max_cron_threads = 2
+max_cron_threads = 5
 osv_memory_age_limit = 1.0
 osv_memory_count_limit = False
 pg_path = None
