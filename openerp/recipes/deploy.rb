@@ -130,7 +130,7 @@ node[:deploy].each do |application, deploy|
     user deploy[:user]
     autostart true
     autorestart true
-    environment :HOME => "/home/#{deploy[:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:UNO_PATH => "/usr/lib/libreoffice/program/",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
+    environment :HOME => "/home/#{deploy[:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:UNO_PATH => "/opt/openoffice4/program",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
   end
 
   supervisor_service "openerp" do
