@@ -39,6 +39,10 @@ server {
   # The host name to respond to
   server_name *.<%=node[:openerp][:servername]%>;
 
+  if ($host = 'www.saas.sl' ) {
+          rewrite  ^/(.*)$  https://saas.sl/$1  permanent;
+}
+
    location / {
      
      include proxy_params;
