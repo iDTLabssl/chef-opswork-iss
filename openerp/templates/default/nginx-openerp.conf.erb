@@ -9,6 +9,17 @@ server {
   listen 80;
 
   # listen on both hosts
+  server_name www.saas.sl;
+
+  # and redirect to non www host (declared below)
+  return 301 https://saas.sl$request_uri;
+}
+
+server {
+  listen [::]:80;
+  listen 80;
+
+  # listen on both hosts
   server_name <%=node[:opsworks][:instance][:ip]%> *.<%=node[:openerp][:servername]%>;
 
   # and redirect to the https host (declared below)
