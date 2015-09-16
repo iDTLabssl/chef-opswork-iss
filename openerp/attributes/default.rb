@@ -28,6 +28,7 @@ default[:openerp][:apt_packages] = %w[
   xfonts-utils
   unzip
   zip
+  postgresql-client-9.4
 ]
 
 default[:openerp][:pip_packages] = %w[
