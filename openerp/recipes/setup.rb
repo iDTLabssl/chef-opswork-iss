@@ -12,6 +12,7 @@ include_recipe "nginx"
 include_recipe "nginx::http_stub_status_module"
 include_recipe "python"
 include_recipe 'java'
+include_recipe 'postgresql::apt_pgdg_postgresql'
 include_recipe 'postgresql::client'
 
 # lets set the python egg cache
