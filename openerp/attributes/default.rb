@@ -39,7 +39,6 @@ default[:openerp][:pip_packages] = %w[
   subprocess32
   boto  
   oauthlib
-  https://launchpad.net/aeroolib/trunk/1.0.0/+download/aeroolib.tar.gz
   egenix-mx-base
   filechunkio
 ]
@@ -90,7 +89,7 @@ override['nginx']['gzip'] = 'on'
 
 override['postgresql']['enable_pgdg_apt'] = true 
 override['postgresql']['version'] = '9.3'
-override[:chef_ec2_ebs_snapshot][:description] = "iss.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
+override[:chef_ec2_ebs_snapshot][:description] = "saas.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
 
 
