@@ -31,8 +31,7 @@ magic_shell_environment 'PYTHONPATH' do
 end
 
 
-node[:
-erp][:apt_packages].each do |pkg|
+node[:openerp][:apt_packages].each do |pkg|
   package pkg do
     action :install
   end
