@@ -67,6 +67,7 @@ default[:openerp][:aws_secret_key] = 'secret'
 default[:openerp][:route53_zone_id] = ''
 default[:openerp][:domain] = ''
 default[:openerp][:workers] = 3
+default[:openerp][:max_cron_threads] = 2
 default[:openerp][:elastic_ip] = ''
 default[:openerp][:log_handler] = "[':WARNING']"
 default[:openerp][:log_level] = 'info'
