@@ -7,6 +7,7 @@ cookbook 'python'
 cookbook 'build-essential'
 cookbook 'openssl'
 cookbook 'aws'
+cookbook "rsyslog", "~> 2.2.0"
 cookbook 'nginx'
 cookbook 'supervisor'
 cookbook 'chef-ec2-ebs-snapshot', git: 'git://github.com/tarzan0820/chef-ec2-consistent-snapshot.git'
@@ -16,3 +17,4 @@ cookbook "s3cmd", git: 'git://github.com/fred/chef-s3cmd.git'
 cookbook 'java'
 cookbook 'tar'
 cookbook "sumologic-collector"
+
