@@ -9,11 +9,13 @@ version          '0.1.0'
 depends "ohai"
 depends "supervisor"
 depends "nginx"
+depends "deploy"
 depends "postgresql"
 depends "java"
 depends "idt_infra_tools"
 depends 'tar'
 depends 'sumologic-collector'
+depends 'deploy'
 
 
 
