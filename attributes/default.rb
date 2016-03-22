@@ -41,6 +41,7 @@ default[:openerp][:pip_packages] = %w[
   oauthlib
   egenix-mx-base
   filechunkio
+  pysftp
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
