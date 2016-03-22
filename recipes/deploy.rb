@@ -12,21 +12,30 @@ include_recipe "openerp"
 #include_recipe "nginx"
 #include_recipe "nginx::http_stub_status_module"
 
+Chef::Log.info "About to search apps"
 
-node[:deploy].each do |opswork_app, deploy|
-   if deploy[:application_type] != 'other'
-     Chef::Log.debug("Skipping deploy::other application #{opswork_app} as it is not an other app")
-     next
-   end
+# Search apps to be deployed. Without deploy:true filter all apps would be returned.
+apps = search(:aws_opsworks_app, "deploy:true") rescue []
+Chef::Log.info "Found #{apps.size} apps to deploy on the stack. Assuming they are all Odoo apps."
 
-  application 'deploy_app' do
-    path deploy[:deploy_to]
-    owner deploy[:user]
-    group deploy[:group]
-    repository deploy[:scm][:repository]
-    revision deploy[:scm][:revision]
-    deploy_key deploy[:scm][:ssh_key]
+apps.each do |app|
+  Chef::Log.info "Deploying #{app["shortname"]}."
+
+  app_source = app["app_source"]
+  app_checkout = ::File.join(Chef::Config["file_cache_path"], app["shortname"])
+  app_path = ::File.join('/srv', app["shortname"])
+
+  # deploy git repo from opsworks app
+  application_git app_path do
+    owner node[:user]
+    group node[:group]
+    repository       app_source["url"]
+    revision         app_source["revision"]
+    deploy_key       app_source["ssh_key"]
   end
+
+  app_deploy = ::File.join(node["opsworks_app_nodejs"]["deploy"], app["shortname"])
+
 
   # create data dir if for some reason its not there
   directory node[:openerp][:data_dir] do
