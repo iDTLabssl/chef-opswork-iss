@@ -14,21 +14,19 @@ include_recipe "openerp"
 
 include_recipe 'deploy'
 
-node[:deploy].each do |application, deploy|
+node[:deploy].each do |opswork_app, deploy|
    if deploy[:application_type] != 'other'
-     Chef::Log.debug("Skipping deploy::other application #{application} as it is not an other app")
+     Chef::Log.debug("Skipping deploy::other application #{opswork_app} as it is not an other app")
      next
    end
 
-  opsworks_deploy_dir do
-    user deploy[:user]
-    group deploy[:group]
+  application 'deploy_app' do
     path deploy[:deploy_to]
-  end
-
-  opsworks_deploy do
-    deploy_data deploy
-    app application
+    owner deploy[:user]
+    group deploy[:group]
+    repository deploy[:scm][:repository]
+    revision deploy[:scm][:revision]
+    deploy_key deploy[:scm][:ssh_key]
   end
 
   # create data dir if for some reason its not there
