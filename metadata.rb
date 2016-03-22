@@ -14,8 +14,6 @@ depends "postgresql"
 depends "java"
 depends "idt_infra_tools"
 depends 'tar'
-depends 'sumologic-collector'
-depends 'deploy'
 
 
 
