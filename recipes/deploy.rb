@@ -12,7 +12,6 @@ include_recipe "openerp"
 #include_recipe "nginx"
 #include_recipe "nginx::http_stub_status_module"
 
-include_recipe 'deploy'
 
 node[:deploy].each do |opswork_app, deploy|
    if deploy[:application_type] != 'other'
