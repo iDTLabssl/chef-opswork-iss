@@ -9,7 +9,6 @@ version          '0.2.0'
 depends "ohai"
 depends "supervisor"
 depends "nginx"
-depends "deploy"
 depends "postgresql"
 depends "java"
 depends "idt_infra_tools"
