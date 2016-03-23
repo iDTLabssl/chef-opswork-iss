@@ -18,7 +18,19 @@ Chef::Log.info "About to search apps"
 apps = search(:aws_opsworks_app, "deploy:true") rescue []
 Chef::Log.info "Found #{apps.size} apps to deploy on the stack. Assuming they are all Odoo apps."
 
+instance = search("aws_opsworks_instance", "self:true").first
+Chef::Log.info("********** For instance '#{instance['instance_id']}', the instance's hostname is '#{instance['hostname']}' **********")
+
+rds_db_instance = search("aws_opsworks_rds_db_instance").first
+Chef::Log.info("********** The RDS instance's address is '#{rds_db_instance['address']}' **********")
+
 apps.each do |app|
+  
+  if app["shortname"] != instance['hostname'] then
+       Chef::Log.warn("********** Skipping because we can not deploy '#{app['shortname']}' on instance '#{instance['hostname']}' **********")
+       next
+  end
+
   Chef::Log.info "Deploying #{app["shortname"]}."
 
   app_source = app["app_source"]
@@ -27,12 +39,14 @@ apps.each do |app|
   document_root = ::File.join(app_path, 'current')
 
   # deploy git repo from opsworks app
-  application_git app_path do
+  application app_path do
     owner node[:deploy_user][:user]
     group node[:deploy_user][:group]
-    repository       app_source["url"]
-    revision         app_source["revision"]
-    deploy_key       app_source["ssh_key"]
+    git app_path do
+      repository       app_source["url"]
+      revision         app_source["revision"]
+      deploy_key       app_source["ssh_key"]
+    end
   end
 
   # create data dir if for some reason its not there
@@ -124,7 +138,7 @@ apps.each do |app|
       :deploy_path => document_root,
       :log_file =>  "#{app_path}/shared/log/openerp.log",
       :pid_file =>  "#{app_path}/shared/pids/openerp.pid",
-      :database => app['data_sources']['arn']
+      :database => rds_db_instance
     ) 
   end
 
