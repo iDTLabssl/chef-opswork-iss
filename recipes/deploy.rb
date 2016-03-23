@@ -31,12 +31,10 @@ apps.each do |app|
        next
   end
 
-  Chef::Log.info "Deploying #{app["shortname"]}."
+  app_path = ::File.join('/srv', app["shortname"])
+  Chef::Log.info "Deploying #{app["shortname"]} to #{app_path}."
 
   app_source = app["app_source"]
-  app_checkout = ::File.join(Chef::Config["file_cache_path"], app["shortname"])
-  app_path = ::File.join('/srv', app["shortname"])
-  document_root = ::File.join(app_path, 'current')
 
   # deploy git repo from opsworks app
   application app_path do
@@ -92,7 +90,7 @@ apps.each do |app|
   script 'install_requirements' do
     interpreter "bash"
     user "root"
-    cwd document_root
+    cwd app_path
     code "pip install -r requirements.txt"
   end
 
@@ -106,7 +104,7 @@ apps.each do |app|
   script 'install_less' do
     interpreter "bash"
     user "root"
-    cwd document_root
+    cwd app_path
     code <<-EOH
     npm install -g less less-plugin-clean-css
     EOH
@@ -115,7 +113,7 @@ apps.each do |app|
   script 'chmod_gevent' do
     interpreter "bash"
     user "root"
-    cwd document_root
+    cwd app_path
     code "chmod +x openerp-gevent"
   end
 
@@ -135,16 +133,16 @@ apps.each do |app|
     mode "0644"
     action :create
     variables(
-      :deploy_path => document_root,
-      :log_file =>  "#{app_path}/shared/log/openerp.log",
-      :pid_file =>  "#{app_path}/shared/pids/openerp.pid",
+      :deploy_path => app_path,
+      :log_file =>  "/var/logs/#{app["shortname"]}.log",
+      :pid_file =>  "/var/run/#{app["shortname"]}.pid",
       :database => rds_db_instance
     ) 
   end
 
   supervisor_service "openerp" do
     command "python ./odoo.py"
-    directory document_root
+    directory app_path
     user node[:deploy_user][:user]
     autostart true
     autorestart true
@@ -159,7 +157,7 @@ apps.each do |app|
 #  script 'execute_db_update' do
 #    interpreter "bash"
 #    user node[:deploy_user][:user]
-#    cwd document_root
+#    cwd app_path
 #    environment 'HOME' => "/home/#{node[:deploy_user][:user]}"
 #    code "python db_update.py --backup_dir=#{node[:openerp][:data_dir]}/backups/"
 #    notifies :restart, "supervisor_service[openerp]"
@@ -209,7 +207,7 @@ apps.each do |app|
   template "/etc/nginx/sites-available/#{node[:openerp][:servername]}.conf" do
     source "nginx-openerp.conf.erb"
     variables({
-      :deploy_path => document_root,
+      :deploy_path => app_path,
     })
     notifies :reload, "service[nginx]"
   end
@@ -219,14 +217,14 @@ apps.each do |app|
   end
 
   # let's get some of our statics in place
-  directory node[:openerp][:static_http_document_root] do
+  directory node[:openerp][:static_http_app_path] do
     owner node[:openerp][:user]
     group node[:openerp][:group]
     mode 00755
     action :create
-    not_if { ::File.exists?(node[:openerp][:static_http_document_root]) }
+    not_if { ::File.exists?(node[:openerp][:static_http_app_path]) }
   end
-  remote_directory "#{node[:openerp][:static_http_document_root]}404" do
+  remote_directory "#{node[:openerp][:static_http_app_path]}404" do
     source '404'
     owner node[:openerp][:user]
     group node[:openerp][:group]
