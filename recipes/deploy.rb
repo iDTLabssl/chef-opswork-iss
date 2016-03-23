@@ -27,8 +27,8 @@ apps.each do |app|
 
   # deploy git repo from opsworks app
   application_git app_path do
-    owner node[:user]
-    group node[:group]
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
     repository       app_source["url"]
     revision         app_source["revision"]
     deploy_key       app_source["ssh_key"]
@@ -39,8 +39,8 @@ apps.each do |app|
 
   # create data dir if for some reason its not there
   directory node[:openerp][:data_dir] do
-    owner deploy[:user]
-    group deploy[:group]
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
     mode 00755
     action :create
     not_if { ::File.exists?(node[:openerp][:data_dir]) }
