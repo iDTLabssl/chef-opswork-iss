@@ -36,6 +36,14 @@ apps.each do |app|
 
   app_source = app["app_source"]
 
+    # create static web directory its not there
+  directory '/var/www' do
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
+    mode 00755
+    action :create
+  end
+
   # deploy git repo from opsworks app
   application app_path do
     owner node[:deploy_user][:user]
@@ -62,14 +70,6 @@ apps.each do |app|
     mode 00755
     action :create
     not_if { ::File.exists?(node[:openerp][:data_dir]) }
-  end
-
-  # create static web directory its not there
-  directory '/var/www' do
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
-    mode 00755
-    action :create
   end
   
   
