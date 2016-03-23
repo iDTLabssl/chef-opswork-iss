@@ -208,7 +208,7 @@ apps.each do |app|
     source "nginx-openerp.conf.erb"
     variables({
       :deploy_path => app_path,
-      :instance => instance
+      :public_ip => instance[:public_ip]
     })
     notifies :reload, "service[nginx]"
   end
