@@ -24,6 +24,7 @@ apps.each do |app|
   app_source = app["app_source"]
   app_checkout = ::File.join(Chef::Config["file_cache_path"], app["shortname"])
   app_path = ::File.join('/srv', app["shortname"])
+  document_root = ::File.join(app_path, 'current')
 
   # deploy git repo from opsworks app
   application_git app_path do
@@ -33,9 +34,6 @@ apps.each do |app|
     revision         app_source["revision"]
     deploy_key       app_source["ssh_key"]
   end
-
-  app_deploy = ::File.join(node["opsworks_app_nodejs"]["deploy"], app["shortname"])
-
 
   # create data dir if for some reason its not there
   directory node[:openerp][:data_dir] do
@@ -48,8 +46,8 @@ apps.each do |app|
 
   # create static web directory its not there
   directory '/var/www' do
-    owner deploy[:user]
-    group deploy[:group]
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
     mode 00755
     action :create
   end
@@ -63,7 +61,7 @@ apps.each do |app|
 
 # lets ensure that the data dir is writable
   bash "correct_directory_permission" do
-    command "chown {deploy[:user]}:{deploy[:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
+    command "chown {node[:deploy_user][:user]}:{node[:deploy_user][:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
     only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
 
@@ -80,7 +78,7 @@ apps.each do |app|
   script 'install_requirements' do
     interpreter "bash"
     user "root"
-    cwd deploy[:absolute_document_root]
+    cwd document_root
     code "pip install -r requirements.txt"
   end
 
@@ -94,7 +92,7 @@ apps.each do |app|
   script 'install_less' do
     interpreter "bash"
     user "root"
-    cwd deploy[:absolute_document_root]
+    cwd document_root
     code <<-EOH
     npm install -g less less-plugin-clean-css
     EOH
@@ -103,7 +101,7 @@ apps.each do |app|
   script 'chmod_gevent' do
     interpreter "bash"
     user "root"
-    cwd deploy[:absolute_document_root]
+    cwd document_root
     code "chmod +x openerp-gevent"
   end
 
@@ -116,27 +114,27 @@ apps.each do |app|
 #    EOH
 #  end
 
-  template "/home/#{deploy[:user]}/.openerp_serverrc" do
+  template "/home/#{node[:deploy_user][:user]}/.openerp_serverrc" do
     source "openerp.conf.erb"
-    owner deploy[:user]
-    group deploy[:group]
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
     mode "0644"
     action :create
     variables(
-      :deploy_path => deploy[:absolute_document_root],
-      :log_file =>  "#{deploy[:deploy_to]}/shared/log/openerp.log",
-      :pid_file =>  "#{deploy[:deploy_to]}/shared/pids/openerp.pid",
-      :database => deploy[:database]
+      :deploy_path => document_root,
+      :log_file =>  "#{app_path}/shared/log/openerp.log",
+      :pid_file =>  "#{app_path}/shared/pids/openerp.pid",
+      :database => app['data_sources']['arn']
     ) 
   end
 
   supervisor_service "openerp" do
     command "python ./odoo.py"
-    directory deploy[:absolute_document_root]
-    user deploy[:user]
+    directory document_root
+    user node[:deploy_user][:user]
     autostart true
     autorestart true
-    environment :HOME => "/home/#{deploy[:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
+    environment :HOME => "/home/#{node[:deploy_user][:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
   end
 
   supervisor_service "openerp" do
@@ -146,9 +144,9 @@ apps.each do |app|
 
 #  script 'execute_db_update' do
 #    interpreter "bash"
-#    user deploy[:user]
-#    cwd deploy[:absolute_document_root]
-#    environment 'HOME' => "/home/#{deploy[:user]}"
+#    user node[:deploy_user][:user]
+#    cwd document_root
+#    environment 'HOME' => "/home/#{node[:deploy_user][:user]}"
 #    code "python db_update.py --backup_dir=#{node[:openerp][:data_dir]}/backups/"
 #    notifies :restart, "supervisor_service[openerp]"
 #  end
@@ -168,8 +166,8 @@ apps.each do |app|
   end
 	# nginx log directory
   directory '/etc/nginx/logs/' do
-    owner deploy[:user]
-    group deploy[:group]
+    owner node[:deploy_user][:user]
+    group node[:deploy_user][:group]
     mode 00755
     action :create
   end
@@ -180,15 +178,15 @@ apps.each do |app|
   template "/etc/nginx/default_ssl.crt" do
         source "server.crt.erb"
         variables({
-          :ssl_crt => deploy[:ssl_certificate],
-	  :ssl_crt_ca => deploy[:ssl_certificate_ca],
+          :ssl_crt => app['ssl_configuration']['certificate'],
+	        :ssl_crt_ca => app['ssl_configuration']['chain'],
         })
       end
       
     template "/etc/nginx/default_ssl.key" do
         source "server.pem.erb"
         variables({
-          :ssl_pem => deploy[:ssl_certificate_key],
+          :ssl_pem => app['ssl_configuration']['private_key'],
         })
       end
 
@@ -197,7 +195,7 @@ apps.each do |app|
   template "/etc/nginx/sites-available/#{node[:openerp][:servername]}.conf" do
     source "nginx-openerp.conf.erb"
     variables({
-      :deploy_path => deploy[:absolute_document_root],
+      :deploy_path => document_root,
     })
     notifies :reload, "service[nginx]"
   end
