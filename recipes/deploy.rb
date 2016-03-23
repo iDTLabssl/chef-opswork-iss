@@ -31,7 +31,7 @@ apps.each do |app|
        next
   end
 
-  app_path = ::File.join('/srv', app["shortname"])
+  app_path = ::File.join('/var/www', app["shortname"])
   Chef::Log.info "Deploying #{app["shortname"]} to #{app_path}."
 
   app_source = app["app_source"]
@@ -40,6 +40,14 @@ apps.each do |app|
   application app_path do
     owner node[:deploy_user][:user]
     group node[:deploy_user][:group]
+    file "/var/logs/#{app["shortname"]}.log" do
+      owner node[:deploy_user][:user]
+      group node[:deploy_user][:group]
+    end
+    file "/var/run/#{app["shortname"]}.pid" do
+      owner node[:deploy_user][:user]
+      group node[:deploy_user][:group]
+    end
     git app_path do
       repository       app_source["url"]
       revision         app_source["revision"]
@@ -126,19 +134,7 @@ apps.each do |app|
 #    EOH
 #  end
 
-  template "/home/#{node[:deploy_user][:user]}/.openerp_serverrc" do
-    source "openerp.conf.erb"
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
-    mode "0644"
-    action :create
-    variables(
-      :deploy_path => app_path,
-      :log_file =>  "/var/logs/#{app["shortname"]}.log",
-      :pid_file =>  "/var/run/#{app["shortname"]}.pid",
-      :database => rds_db_instance
-    ) 
-  end
+  
 
   supervisor_service "openerp" do
     command "python ./odoo.py"
