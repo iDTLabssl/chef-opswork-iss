@@ -56,6 +56,19 @@ apps.each do |app|
       owner node[:deploy_user][:user]
       group node[:deploy_user][:group]
     end
+    template "/home/#{node[:deploy_user][:user]}/.openerp_serverrc" do
+      source "openerp.conf.erb"
+      owner node[:deploy_user][:user]
+      group node[:deploy_user][:group]
+      mode "0644"
+      action :create
+      variables(
+        :deploy_path => app_path,
+        :log_file =>  "/var/logs/#{app["shortname"]}.log",
+        :pid_file =>  "/var/run/#{app["shortname"]}.pid",
+        :database => rds_db_instance
+      ) 
+    end
     git app_path do
       repository       app_source["url"]
       revision         app_source["revision"]
