@@ -24,6 +24,8 @@ Chef::Log.info("********** For instance '#{instance['instance_id']}', the instan
 rds_db_instance = search("aws_opsworks_rds_db_instance").first
 Chef::Log.info("********** The RDS instance's address is '#{rds_db_instance['address']}' **********")
 
+workers = (node['cpu']['total'] * 2) + 1
+
 apps.each do |app|
   
   if app["shortname"] != instance['hostname'] then
@@ -66,7 +68,8 @@ apps.each do |app|
         :deploy_path => app_path,
         :log_file =>  "/var/logs/#{app["shortname"]}.log",
         :pid_file =>  "/var/run/#{app["shortname"]}.pid",
-        :database => rds_db_instance
+        :database => rds_db_instance,
+        :workers => workers
       ) 
     end
     git app_path do
