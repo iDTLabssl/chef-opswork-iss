@@ -48,7 +48,7 @@ apps.each do |app|
   application app_path do
     owner node[:deploy_user][:user]
     group node[:deploy_user][:group]
-    file "/var/logs/#{app["shortname"]}.log" do
+    file "/var/log/#{app["shortname"]}.log" do
       owner node[:deploy_user][:user]
       group node[:deploy_user][:group]
     end
