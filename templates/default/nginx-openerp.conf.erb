@@ -20,7 +20,7 @@ server {
   listen 80;
 
   # listen on both hosts
-  server_name <%=public_ip%> *.<%=node[:openerp][:servername]%>;
+  server_name <%=@public_ip %> *.<%=node[:openerp][:servername]%>;
 
   # and redirect to the https host (declared below)
   # avoiding http://www -> https://www -> https:// chain.
