@@ -217,14 +217,14 @@ apps.each do |app|
   end
 
   # let's get some of our statics in place
-  directory node[:openerp][:static_http_app_path] do
+  directory node[:openerp][:static_http_document_root] do
     owner node[:openerp][:user]
     group node[:openerp][:group]
     mode 00755
     action :create
-    not_if { ::File.exists?(node[:openerp][:static_http_app_path]) }
+    not_if { ::File.exists?(node[:openerp][:static_http_document_root]) }
   end
-  remote_directory "#{node[:openerp][:static_http_app_path]}404" do
+  remote_directory "#{node[:openerp][:static_http_document_root]}404" do
     source '404'
     owner node[:openerp][:user]
     group node[:openerp][:group]
