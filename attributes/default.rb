@@ -42,6 +42,7 @@ default[:openerp][:pip_packages] = %w[
   egenix-mx-base
   filechunkio
   pysftp
+  rotate-backups-s3
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
