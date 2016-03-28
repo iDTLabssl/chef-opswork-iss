@@ -38,6 +38,11 @@ apps.each do |app|
 
   app_source = app["app_source"]
 
+  openerp_conf = node[:openerp]
+  if node.key?(app["shortname"]) then
+    openerp_conf = openerp_conf.merge(node[app["shortname"]])
+  end
+
     # create static web directory its not there
   directory '/var/www' do
     owner node[:deploy_user][:user]
@@ -69,7 +74,8 @@ apps.each do |app|
         :log_file =>  "/var/logs/#{app["shortname"]}.log",
         :pid_file =>  "/var/run/#{app["shortname"]}.pid",
         :database => rds_db_instance,
-        :workers => workers
+        :workers => workers,
+        :openerp => openerp_conf,
       ) 
     end
     git app_path do

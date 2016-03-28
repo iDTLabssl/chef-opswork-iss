@@ -1,32 +1,32 @@
-[options] <%=node[:openerp][:user]%>
-addons_path = <%=node[:openerp][:addons_path]%>
-admin_passwd = <%=node[:openerp][:admin_pass]%>
+[options] <%=@openerp[:user]%>
+addons_path = <%=@openerp[:addons_path]%>
+admin_passwd = <%=@openerp[:admin_pass]%>
 auto_reload = False
 csv_internal_sep = ,
-data_dir = <%=node[:openerp][:data_dir]%>
+data_dir = <%=@openerp[:data_dir]%>
 db_host = <%=@database[:address] %>
-db_maxconn = <%=node[:openerp][:database][:maxconn]%>
+db_maxconn = <%=@openerp[:db_maxconn]%>
 db_password = <%=@database[:db_password] %>
 db_port = False
 db_template = template1
 db_user = <%=@database[:db_user] %>
-dbfilter = <%=node[:openerp][:db_filter]%> 
-debug_mode = <%=node[:openerp][:debug_mode]%>
+dbfilter = <%=@openerp[:dbfilter]%> 
+debug_mode = <%=@openerp[:debug_mode]%>
 demo = {}
-email_from = <%=node[:openerp][:email_from]%>
+email_from = <%=@openerp[:email_from]%>
 import_partial = False
-limit_memory_hard = 3000000000
-limit_memory_soft = 2000000000
+limit_memory_hard = <%=@openerp[:limit_memory_hard]%>
+limit_memory_soft = <%=@openerp[:limit_memory_soft]%>
 limit_request = 8192
 limit_time_cpu = 1200
 limit_time_real = 2400
 list_db = False
-log_handler = <%=node[:openerp][:log_handler]%> 
-log_level = <%=node[:openerp][:log_level]%> 
+log_handler = <%=@openerp[:log_handler]%> 
+log_level = <%=@openerp[:log_level]%> 
 logfile = <%=@log_file %>
 logrotate = True
 longpolling_port = 8072
-max_cron_threads = <%=node[:openerp][:max_cron_threads]%>
+max_cron_threads = <%=@openerp[:max_cron_threads]%>
 osv_memory_age_limit = 1.0
 osv_memory_count_limit = False
 pg_path = None
@@ -60,14 +60,14 @@ xmlrpc_port = 8069
 xmlrpcs = True
 xmlrpcs_interface = 
 xmlrpcs_port = 8071
-sentry_dsn = <%=node[:openerp][:sentry_dsn]%>
-sentry_client_dsn = <%=node[:openerp][:sentry_client_dsn]%>
-sentry_enable_logging = <%=node[:openerp][:sentry_enable_logging]%>
-sentry_include_context = <%=node[:openerp][:sentry_include_context]%>
-sentry_logging_level = <%=node[:openerp][:sentry_logging_level]%>
-aws_access_key = <%=node[:openerp][:aws_access_key]%>
-aws_secret_key = <%=node[:openerp][:aws_secret_key]%>
-aws_s3_bucket  = <%=node[:openerp][:aws_s3_bucket]%>
-route53_zone_id = <%=node[:openerp][:route53_zone_id]%>
-domain  = <%=node[:openerp][:domain]%>
-elastic_ip = <%=node[:openerp][:elastic_ip]%>
+sentry_dsn = <%=@openerp[:sentry_dsn]%>
+sentry_client_dsn = <%=@openerp[:sentry_client_dsn]%>
+sentry_enable_logging = <%=@openerp[:sentry_enable_logging]%>
+sentry_include_context = <%=@openerp[:sentry_include_context]%>
+sentry_logging_level = <%=@openerp[:sentry_logging_level]%>
+aws_access_key = <%=@openerp[:aws_access_key]%>
+aws_secret_key = <%=@openerp[:aws_secret_key]%>
+aws_s3_bucket  = <%=@openerp[:aws_s3_bucket]%>
+route53_zone_id = <%=@openerp[:route53_zone_id]%>
+domain  = <%=@openerp[:domain]%>
+elastic_ip = <%=@openerp[:elastic_ip]%>

@@ -50,18 +50,20 @@ default[:openerp][:pip_packages] = %w[
 #default[:openerp][:database][:password] = ''
 #default[:openerp][:database][:port] = node[:opsworks][:stack][:port]
 #default[:openerp][:database][:user] = node[:opsworks][:stack][:db_user]
-default[:openerp][:database][:maxconn] = 30
+default[:openerp][:db_maxconn] = 30
 default[:openerp][:servername] = 'servername'
 
 default[:openerp][:nginx_authuser] = 'user'
 default[:openerp][:nginx_authpass] = 'pass'
 
 default[:openerp][:data_dir] = '/mnt/data'
-default[:openerp][:db_filter] = '%h'
+default[:openerp][:dbfilter] = '%h'
 default[:openerp][:debug_mode] = 'False'
-default[:openerp][:email_from] = 'no-reply@iss.sl'
+default[:openerp][:email_from] = 'no-reply@saas.sl'
+default[:openerp][:limit_memory_hard] = 1500000000
+default[:openerp][:limit_memory_soft] =  1200000000
 
-default[:openerp][:admin_pass] = 'supersecret'
+default[:openerp][:admin_passwd] = 'supersecret'
 default[:openerp][:addons_path] = 'openerp/addons/'
 default[:openerp][:sentry_dsn] = 'secret'
 default[:openerp][:aws_access_key] = 'secret'
