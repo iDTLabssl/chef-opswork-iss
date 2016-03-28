@@ -51,7 +51,7 @@ default[:openerp][:pip_packages] = %w[
 #default[:openerp][:database][:port] = node[:opsworks][:stack][:port]
 #default[:openerp][:database][:user] = node[:opsworks][:stack][:db_user]
 default[:openerp][:db_maxconn] = 30
-default[:openerp][:servername] = 'servername'
+default[:openerp][:servername] = 'saas.sl'
 
 default[:openerp][:nginx_authuser] = 'user'
 default[:openerp][:nginx_authpass] = 'pass'
@@ -59,7 +59,7 @@ default[:openerp][:nginx_authpass] = 'pass'
 default[:openerp][:data_dir] = '/mnt/data'
 default[:openerp][:db_filter] = '%h'
 default[:openerp][:debug_mode] = 'False'
-default[:openerp][:email_from] = 'no-reply@iss.sl'
+default[:openerp][:email_from] = 'no-reply@saas.sl'
 
 default[:openerp][:admin_passwd] = 'supersecret'
 default[:openerp][:addons_path] = 'openerp/addons/'
@@ -69,6 +69,8 @@ default[:openerp][:aws_secret_key] = 'secret'
 default[:openerp][:route53_zone_id] = ''
 default[:openerp][:domain] = ''
 default[:openerp][:workers] = 3
+default[:openerp][:limit_memory_hard] = 1500000000
+default[:openerp][:limit_memory_soft] = 1200000000
 default[:openerp][:max_cron_threads] = 2
 default[:openerp][:elastic_ip] = ''
 default[:openerp][:log_handler] = "[':WARNING']"
