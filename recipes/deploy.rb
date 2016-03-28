@@ -71,7 +71,7 @@ apps.each do |app|
       action :create
       variables(
         :deploy_path => app_path,
-        :log_file =>  "/var/log/#{app["shortname"]}.log",
+        :log_file =>  "openerp.log",
         :pid_file =>  "/var/run/#{app["shortname"]}.pid",
         :database => rds_db_instance,
         :workers => workers,
