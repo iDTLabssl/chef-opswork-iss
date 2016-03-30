@@ -85,8 +85,8 @@ default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
 default[:openerp][:ssl_private] = '/etc/nginx/ssh/server.pem'
 
 
-default[:deploy_user][:user] = 'ubuntu'
-default[:deploy_user][:group] = 'ubuntu'
+default[:deploy][:user] = 'ubuntu'
+default[:deploy][:group] = 'ubuntu'
 
 override['supervisor']['inet_port'] = '9001'
 

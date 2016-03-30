@@ -6,11 +6,8 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-#include_recipe "supervisor"
 include_recipe "openerp"
-#include_recipe "nginx::repo"
-#include_recipe "nginx"
-#include_recipe "nginx::http_stub_status_module"
+
 
 Chef::Log.info "About to search apps"
 
@@ -28,7 +25,7 @@ workers = (node['cpu']['total'] * 2) + 1
 
 apps.each do |app|
   
-  if app["shortname"] != instance['hostname'] then
+  if app["shortname"] != node['deploy']['app'] then
        Chef::Log.warn("********** Skipping because we can not deploy '#{app['shortname']}' on instance '#{instance['hostname']}' **********")
        next
   end
@@ -38,35 +35,30 @@ apps.each do |app|
 
   app_source = app["app_source"]
 
-  openerp_conf = node[:openerp]
-  if node.key?(app["shortname"]) then
-    openerp_conf = openerp_conf.merge(node[app["shortname"]])
-  end
-
     # create static web directory its not there
   directory '/var/www' do
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
+    owner node[:deploy][:user]
+    group node[:deploy][:group]
     mode 00755
     action :create
   end
 
   # deploy git repo from opsworks app
   application app_path do
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
+    owner node[:deploy][:user]
+    group node[:deploy][:group]
     file "/var/log/#{app["shortname"]}.log" do
-      owner node[:deploy_user][:user]
-      group node[:deploy_user][:group]
+      owner node[:deploy][:user]
+      group node[:deploy][:group]
     end
     file "/var/run/#{app["shortname"]}.pid" do
-      owner node[:deploy_user][:user]
-      group node[:deploy_user][:group]
+      owner node[:deploy][:user]
+      group node[:deploy][:group]
     end
-    template "/home/#{node[:deploy_user][:user]}/.openerp_serverrc" do
+    template "/home/#{node[:deploy][:user]}/.openerp_serverrc" do
       source "openerp.conf.erb"
-      owner node[:deploy_user][:user]
-      group node[:deploy_user][:group]
+      owner node[:deploy][:user]
+      group node[:deploy][:group]
       mode "0644"
       action :create
       variables(
@@ -75,7 +67,7 @@ apps.each do |app|
         :pid_file =>  "/var/run/#{app["shortname"]}.pid",
         :database => rds_db_instance,
         :workers => workers,
-        :openerp => openerp_conf,
+        :openerp => node[:openerp],
       ) 
     end
     git app_path do
@@ -87,8 +79,8 @@ apps.each do |app|
 
   # create data dir if for some reason its not there
   directory node[:openerp][:data_dir] do
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
+    owner node[:deploy][:user]
+    group node[:deploy][:group]
     mode 00755
     action :create
     not_if { ::File.exists?(node[:openerp][:data_dir]) }
@@ -103,7 +95,7 @@ apps.each do |app|
 
 # lets ensure that the data dir is writable
   bash "correct_directory_permission" do
-    command "chown {node[:deploy_user][:user]}:{node[:deploy_user][:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
+    command "chown {node[:deploy][:user]}:{node[:deploy][:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
     only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
 
@@ -161,10 +153,10 @@ apps.each do |app|
   supervisor_service "openerp" do
     command "python ./odoo.py"
     directory app_path
-    user node[:deploy_user][:user]
+    user node[:deploy][:user]
     autostart true
     autorestart true
-    environment :HOME => "/home/#{node[:deploy_user][:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
+    environment :HOME => "/home/#{node[:deploy][:user]}",:PYTHON_EGG_CACHE => "/tmp/python-eggs",:PYTHONPATH => "/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages"
   end
 
   supervisor_service "openerp" do
@@ -174,9 +166,9 @@ apps.each do |app|
 
 #  script 'execute_db_update' do
 #    interpreter "bash"
-#    user node[:deploy_user][:user]
+#    user node[:deploy][:user]
 #    cwd app_path
-#    environment 'HOME' => "/home/#{node[:deploy_user][:user]}"
+#    environment 'HOME' => "/home/#{node[:deploy][:user]}"
 #    code "python db_update.py --backup_dir=#{node[:openerp][:data_dir]}/backups/"
 #    notifies :restart, "supervisor_service[openerp]"
 #  end
@@ -196,8 +188,8 @@ apps.each do |app|
   end
 	# nginx log directory
   directory '/etc/nginx/logs/' do
-    owner node[:deploy_user][:user]
-    group node[:deploy_user][:group]
+    owner node[:deploy][:user]
+    group node[:deploy][:group]
     mode 00755
     action :create
   end
