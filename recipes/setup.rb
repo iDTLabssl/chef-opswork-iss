@@ -87,4 +87,11 @@ bash "unzip_fonts" do
     unzip -o #{Chef::Config[:file_cache_path]}/pfbfer.zip -d /usr/lib/python2.7/dist-packages/reportlab/fonts/
     EOH
   end
+
+instance = search("aws_opsworks_instance", "self:true").first
+Chef::Log.info("********** For instance '#{instance['instance_id']}', the instance's hostname is '#{instance['hostname']}' **********")
+openerp_conf = node[:openerp]
+if node.key?(instance['hostname']) then
+  override['chef_ec2_ebs_snapshot']['volume_id'] = node[instance['hostname']]['volume_id']
+end
   
