@@ -43,6 +43,7 @@ default[:openerp][:pip_packages] = %w[
   filechunkio
   pysftp
   rotate-backups-s3
+  python-dateutil>=2.5.0
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
