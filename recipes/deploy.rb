@@ -116,6 +116,13 @@ apps.each do |app|
     code "pip install -r requirements.txt"
   end
 
+  script 'update_dateutil' do
+    interpreter "bash"
+    user "root"
+    cwd app_path
+    code "pip install --upgrade python-dateutil"
+  end
+
   bash "correct_node_link" do
     code <<-EOH
     ln -s /usr/bin/nodejs /usr/bin/node
