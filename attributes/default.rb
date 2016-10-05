@@ -44,7 +44,6 @@ default[:openerp][:pip_packages] = %w[
   rotate-backups-s3
   python-dateutil>=2.5.0
   zklib
-  simplejson
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
@@ -95,7 +94,7 @@ override['supervisor']['inet_port'] = '9001'
 override['nginx']['worker_processes'] = 4
 override['nginx']['default_site_enabled'] = false
 override['nginx']['gzip'] = 'on'
-override['nginx']['user'] = ''
+override['nginx']['user'] = 'www-data'
 
 
 override['postgresql']['enable_pgdg_apt'] = true 

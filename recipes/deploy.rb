@@ -140,6 +140,7 @@ apps.each do |app|
     user "root"
     cwd app_path
     code <<-EOH
+    npm install -g npm
     npm install -g less less-plugin-clean-css
     EOH
   end
