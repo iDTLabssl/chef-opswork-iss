@@ -7,9 +7,9 @@
 # All rights reserved - Do Not Redistribute
 #
 include_recipe "supervisor"
-include_recipe "nginx::repo"
-include_recipe "nginx"
-include_recipe "nginx::http_stub_status_module"
+include_recipe "chef_nginx::repo"
+include_recipe "chef_nginx"
+include_recipe "chef_nginx::http_stub_status_module"
 include_recipe "python"
 include_recipe 'postgresql::apt_pgdg_postgresql'
 include_recipe 'postgresql::client'
