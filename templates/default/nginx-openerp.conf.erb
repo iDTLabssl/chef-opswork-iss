@@ -57,14 +57,16 @@ server {
      proxy_pass http://odoochat;
   }
 
-  # Path for static files
-  root <%=node[:openerp][:static_http_document_root]%>;
 
   #Specify a charset
   charset utf-8;
 
   # Custom 404 page
-  error_page  500 502 503 504 /500.html;
+  error_page 500 502 503 504;
+  location ~* /404/ {
+      root <%=node[:openerp][:static_http_document_root]%>;
+      index index.html;
+  }
 
   location ~* /web/database/manager {
     auth_basic "Restricted Area Login";
