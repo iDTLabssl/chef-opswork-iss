@@ -1,6 +1,14 @@
-proxy_cache_path /tmp/nginx levels=1:2 keys_zone=my_zone:10m inactive=360m;
-proxy_cache_key "$scheme$request_method$host$request_uri";
+# Choose between www and non-www, listen on the *wrong* one and redirect to
+# the right one -- http://wiki.nginx.org/Pitfalls#Server_Name
+#
 
+#odoo server
+upstream odoo {
+  server 127.0.0.1:8069;
+}
+upstream odoochat {
+  server 127.0.0.1:8072;
+}
 
 server {
   listen [::]:80;
@@ -9,17 +17,25 @@ server {
   # listen on both hosts
   server_name <%=@public_ip %> *.<%=node[:openerp][:servername]%>;
 
+  # and redirect to the https host (declared below)
+  # avoiding http://www -> https://www -> https:// chain.
   rewrite ^(.*) https://$host$1 permanent;
 }
 
+
 server {
 
-  listen [::]:443 ssl spdy;
-  listen 443 ssl spdy;
-  client_max_body_size 100M;
-  # The host name to respond to
-  server_name *.<%=node[:openerp][:servername]%>;
+  # listen [::]:443 ssl http2 accept_filter=dataready;  # for FreeBSD
+  # listen 443 ssl http2 accept_filter=dataready;  # for FreeBSD
+  # listen [::]:443 ssl http2 deferred;  # for Linux
+  # listen 443 ssl http2 deferred;  # for Linux
+  listen [::]:443 ssl http2;
+  listen 443 ssl http2;
 
+  # The host name to respond to
+  server_name *.<%=node[:openerp][:servername]%>;;
+
+  include h5bp/directive-only/ssl.conf;
 
   proxy_connect_timeout       720s;
   proxy_send_timeout          720s;
@@ -31,37 +47,32 @@ server {
   proxy_set_header X-Real-IP $remote_addr;
   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   proxy_set_header X-Forwarded-Proto $scheme;
-   
 
-   location / {
-     
-     proxy_redirect off;
-     proxy_pass               http://127.0.0.1:8069;
-   }
+  # Redirect requests to odoo backend server
+  location / {
+    proxy_redirect off;
+    proxy_pass http://odoo;
+  }
+  location /longpolling {
+     proxy_pass http://odoochat;
+  }
 
-   location /longpolling {
-      proxy_pass              http://127.0.0.1:8072;
-   }
-
-  include h5bp/directive-only/ssl.conf;
-
+  # Path for static files
+  root <%=node[:openerp][:static_http_document_root]%>;
 
   #Specify a charset
   charset utf-8;
 
   # Custom 404 page
-  error_page 500 502 503 504 /500.html;
-location = /500.html {
-    root <%=node[:openerp][:static_http_document_root]%>404/;
-}
+  error_page  500 502 503 504 /500.html;
 
-location ~* /web/database/manager {
-        auth_basic "Restricted Area Login";
-        auth_basic_user_file /etc/nginx/.htpasswd;
-include proxy_params;
-proxy_pass               http://127.0.0.1:8069;
+  location ~* /web/database/manager {
+    auth_basic "Restricted Area Login";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    include proxy_params;
+    proxy_pass  http://127.0.0.1:8069;
 
-    }
+  }
 
   # Include the basic h5bp config set
   include h5bp/basic.conf;

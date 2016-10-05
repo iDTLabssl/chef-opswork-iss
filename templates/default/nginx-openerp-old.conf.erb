@@ -1,118 +1,77 @@
-server_tokens off;
+proxy_cache_path /tmp/nginx levels=1:2 keys_zone=my_zone:10m inactive=360m;
+proxy_cache_key "$scheme$request_method$host$request_uri";
 
-upstream app_server {
-	server 127.0.0.1:8069 weight=1 fail_timeout=30s;
-}
 
-upstream app_server_im {
-	server 127.0.0.1:8072 weight=1 fail_timeout=30s;
+server {
+  listen [::]:80;
+  listen 80;
+
+  # listen on both hosts
+  server_name <%=@public_ip %> *.<%=node[:openerp][:servername]%>;
+
+  rewrite ^(.*) https://$host$1 permanent;
 }
 
 server {
-    server_name  www.<%=node[:openerp][:servername]%>;
-    rewrite ^(.*) http://<%=node[:openerp][:servername]%>$1 permanent;
+
+  listen [::]:443 ssl spdy;
+  listen 443 ssl spdy;
+  client_max_body_size 100M;
+  # The host name to respond to
+  server_name *.<%=node[:openerp][:servername]%>;
+
+
+  proxy_connect_timeout       720s;
+  proxy_send_timeout          720s;
+  proxy_read_timeout          720s;
+  send_timeout                720s;
+
+  # Add Headers for odoo proxy mode
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+   
+
+   location / {
+     
+     proxy_redirect off;
+     proxy_pass               http://127.0.0.1:8069;
+   }
+
+   location /longpolling {
+      proxy_pass              http://127.0.0.1:8072;
+   }
+
+  include h5bp/directive-only/ssl.conf;
+
+
+  #Specify a charset
+  charset utf-8;
+
+  # Custom 404 page
+  error_page 500 502 503 504 /500.html;
+location = /500.html {
+    root <%=node[:openerp][:static_http_document_root]%>404/;
 }
 
-server {
-	listen 			   80 default;
-	charset                    utf-8;
-	client_max_body_size       100m;
-	server_name                <%=node[:openerp][:servername]%>;
+location ~* /web/database/manager {
+        auth_basic "Restricted Area Login";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+include proxy_params;
+proxy_pass               http://127.0.0.1:8069;
 
-	keepalive_timeout          65;
+    }
 
-	#access_log                 /var/log/odoo/nginx-access.log;
-  	#error_log                  /var/log/odoo/nginx-error.log;
+  # Include the basic h5bp config set
+  include h5bp/basic.conf;
 
-	# increase proxy buffer to handle some OpenERP web requests
-  	proxy_buffers              16 64k;
-  	proxy_buffer_size          128k;
+  # Include the spdy h5bp config set
+  include h5bp/directive-only/spdy.conf;
 
-	# force timeouts if the backend dies
-  	proxy_next_upstream        error timeout invalid_header http_500 http_502 http_503;
+  # include stappling
+  include h5bp/directive-only/ssl-stapling.conf;
 
-	# set headers
-        proxy_set_header           Host $host;
-        proxy_set_header           X-Real-IP $remote_addr;
-        proxy_set_header           X-Forward-For $proxy_add_x_forwarded_for;
-        proxy_set_header           X-Forwarded-Proto $scheme;
-
-	# by default, do not forward anything
-         proxy_redirect             off;
-
-
-	gzip                       on;
-        gzip_http_version          1.1;
-        gzip_comp_level            5;
-        gzip_min_length            1100;
-        gzip_proxied               any;
-        gzip_buffers               4 32k;
-        gzip_types
-    application/atom+xml
-    application/javascript
-    application/json
-    application/ld+json
-    application/manifest+json
-    application/rdf+xml
-    application/rss+xml
-    application/schema+json
-    application/vnd.geo+json
-    application/vnd.ms-fontobject
-    application/x-font-ttf
-    application/x-javascript
-    application/x-web-app-manifest+json
-    application/xhtml+xml
-    application/xml
-    font/eot
-    font/opentype
-    image/bmp
-    image/svg+xml
-    image/vnd.microsoft.icon
-    image/x-icon
-    text/cache-manifest
-    text/css
-    text/javascript
-    text/plain
-    text/vcard
-    text/vnd.rim.location.xloc
-    text/vtt
-    text/x-component
-    text/x-cross-domain-policy
-    text/xml;
-         gzip_vary                  on;
-  
-	location / {
-            proxy_pass               http://app_server;
-        }
-
-        location /longpolling {
-            proxy_pass              http://app_server_im;
-        }
-
-
-
-	error_page 404 500 502 503 504 /500.html;
-	location = /500.html {
-	    root <%=node[:openerp][:static_http_document_root]%>;
-	}
-
-	# cache some static data in memory for 60mins.
-	  # under heavy load this should relieve stress on the OpenERP web interface a bit.
-	  location ~* /web/static/ {
-	    proxy_cache_valid       200 60m;
-	    proxy_buffering         on;
-	    expires                 864000;
-	    proxy_pass              http://app_server;
-	  }
-
-	# cache some static data in memory for 60mins.
-	  # under heavy load this should relieve stress on the OpenERP web interface a bit.
-	  location ~* /website/static/ {
-	    proxy_cache_valid       200 60m;
-	    proxy_buffering         on;
-	    expires                 864000;
-	    proxy_pass              http://app_server;
-	  }
-
+  # Include the spdy h5bp config set
+  include h5bp/directive-only/cache-file-descriptors.conf;
 }
-

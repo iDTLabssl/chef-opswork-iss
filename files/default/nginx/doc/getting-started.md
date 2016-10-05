@@ -17,8 +17,8 @@ the config file originally present, and use the same user:
 Apply to the runtime config file:
 
     // /etc/nginx/nginx.conf
-	#user www www;
-	user www-data www-data;
+    #user www www;
+    user www-data www-data;
 
 ## Configure logs and pid file
 
@@ -34,22 +34,27 @@ where logs should be stored:
     // /etc/nginx/nginx.conf
     error_log /var/log/nginx/error.log warn;
 
-And:
-
-    // /etc/nginx/h5bp/expires.conf
-    access_log logs/static.log;
-
-To:
-
-    // /etc/nginx/h5bp/expires.conf
-    access_log /var/log/nginx/static.log;
-
 Or, setup a symlink to point at the right place:
 
     cd /etc/nginx
     ln -s /var/log/nginx logs
 
 The location of the pid file should also be checked and corrected if necessary.
+
+Check your config before trying to start nginx:
+
+    nginx -t
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+If you see:
+
+    nginx -t
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    nginx: [emerg] open() "/usr/share/nginx/log/access.log" failed (2: No such file or directory)
+    nginx: configuration file /etc/nginx/nginx.conf test failed
+
+Or similar, there is still a problem to resolve before continuing.
 
 ## Creating a site definition
 
@@ -71,16 +76,16 @@ Verify the config and restart nginx to apply the changes.
 
 To verify nginx config (Tests default nginx config file)
 
-	nginx -t 
+    nginx -t 
 
 **OR**
 
 To verify a particular nginx config file
-	
-	nginx -t -c nginx.conf	
-	
+    
+    nginx -t -c nginx.conf
+    
 This will test the nginx config file and throws error if any. Otherwise test is successful and you can restart nginx.
 
 Finally reload nginx to apply the changes.
-	
-	/etc/init.d/nginx reload
+    
+    /etc/init.d/nginx reload
