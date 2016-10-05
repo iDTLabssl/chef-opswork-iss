@@ -29,6 +29,7 @@ default[:openerp][:apt_packages] = %w[
   unzip
   zip
   postgresql-client-9.4
+  simplejson
 ]
 
 default[:openerp][:pip_packages] = %w[
@@ -44,6 +45,7 @@ default[:openerp][:pip_packages] = %w[
   pysftp
   rotate-backups-s3
   python-dateutil>=2.5.0
+  zklib
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]

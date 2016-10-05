@@ -64,7 +64,7 @@ apps.each do |app|
       variables(
         :deploy_path => app_path,
         :log_file =>  "openerp.log",
-        :pid_file =>  "/var/run/#{app["shortname"]}.pid",
+        :pid_file =>  ".openerp.pid",
         :database => rds_db_instance,
         :workers => workers,
         :openerp => node[:openerp],
@@ -75,6 +75,11 @@ apps.each do |app|
       revision         app_source["revision"]
       deploy_key       app_source["ssh_key"]
     end
+  end
+
+  bash "correct_mount_directory_permission" do
+    command "chown {node[:deploy][:user]}:{node[:deploy][:group]} {node[:openerp][:data_dir]}; chmod 775 /mnt/data"
+    only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
 
   # create data dir if for some reason its not there
@@ -94,7 +99,7 @@ apps.each do |app|
 #    end
 
 # lets ensure that the data dir is writable
-  bash "correct_directory_permission" do
+  bash "correct_data_directory_permission" do
     command "chown {node[:deploy][:user]}:{node[:deploy][:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
     only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
