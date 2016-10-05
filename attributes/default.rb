@@ -95,6 +95,7 @@ override['supervisor']['inet_port'] = '9001'
 override['nginx']['worker_processes'] = 4
 override['nginx']['default_site_enabled'] = false
 override['nginx']['gzip'] = 'on'
+override['nginx']['user'] = ''
 
 
 override['postgresql']['enable_pgdg_apt'] = true 
