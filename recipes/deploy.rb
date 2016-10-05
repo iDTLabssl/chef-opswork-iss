@@ -187,25 +187,6 @@ apps.each do |app|
 #  end
 
   # let's configure nginx
-  bash "install_h5bp" do
-    code <<-EOH
-     rm -R /etc/nginx
-     EOH
-  end
-  remote_directory '/etc/nginx' do
-    source 'nginx'
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-	# nginx log directory
-  directory '/etc/nginx/logs/' do
-    owner node[:deploy][:user]
-    group node[:deploy][:group]
-    mode 00755
-    action :create
-  end
   template "/etc/nginx/.htpasswd" do
         source "htpasswd.erb"
       end

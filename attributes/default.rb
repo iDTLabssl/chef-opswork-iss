@@ -44,6 +44,7 @@ default[:openerp][:pip_packages] = %w[
   rotate-backups-s3
   python-dateutil>=2.5.0
   zklib
+  simplejson
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
