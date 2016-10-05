@@ -57,6 +57,10 @@ server {
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload;" always;
   ssl_certificate      /etc/nginx/default_ssl.crt;
   ssl_certificate_key  /etc/nginx/default_ssl.key;
+  ssl_stapling on; # Requires nginx >= 1.3.7
+  ssl_stapling_verify on; # Requires nginx => 1.3.7
+  add_header X-Frame-Options SAMEORIGIN;
+  add_header X-Content-Type-Options nosniff;
 
   # log
   access_log /var/log/nginx/odoo.access.log;
@@ -74,6 +78,15 @@ server {
   }
   location /longpolling {
      proxy_pass http://odoochat;
+  }
+
+  location ^~ /[\/]+/static/ {
+    # EXPERIMENTAL proxy cache
+    proxy_cache_valid 200 60m;
+    proxy_buffering on;
+    expires 864000;
+      
+    proxy_pass http://odoo;
   }
 
 
