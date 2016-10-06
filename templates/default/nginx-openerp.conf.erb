@@ -19,7 +19,7 @@ server {
 
   # and redirect to the https host (declared below)
   # avoiding http://www -> https://www -> https:// chain.
-  rewrite ^(.*) https://$host$1 permanent;
+  return 301 https://$host$request_uri$is_args$args ;
 }
 
 
@@ -79,15 +79,15 @@ server {
   location /longpolling {
      proxy_pass http://odoochat;
   }
-
-  location ~* /web/static/ {
-      proxy_cache_valid 200 60m;
-      proxy_buffering on;
-      expires 864000;
-      proxy_pass http://odoo;
+  location /longpolling/im/poll {
+     proxy_pass http://odoochat;
+  }
+  location /longpolling/poll {
+     proxy_pass http://odoochat;
   }
 
-  location ~* /web/content/ {
+  # some resources allowed within /web
+  location ~ ^/web/(content/|static/|image/|login|session/) {
       proxy_cache_valid 200 60m;
       proxy_buffering on;
       expires 864000;
