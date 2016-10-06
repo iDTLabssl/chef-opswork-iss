@@ -125,6 +125,13 @@ apps.each do |app|
     interpreter "bash"
     user "root"
     cwd app_path
+    code "pip install --upgrade requests"
+  end
+
+  script 'update_request' do
+    interpreter "bash"
+    user "root"
+    cwd app_path
     code "pip install --upgrade python-dateutil"
   end
 
@@ -134,6 +141,8 @@ apps.each do |app|
     EOH
     not_if { ::File.exists?('/usr/bin/node') }
   end
+
+
 
   script 'install_less' do
     interpreter "bash"
