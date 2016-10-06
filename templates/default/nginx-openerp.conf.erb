@@ -87,6 +87,13 @@ server {
       proxy_pass http://odoo;
   }
 
+  location ~* /web/content/ {
+      proxy_cache_valid 200 60m;
+      proxy_buffering on;
+      expires 864000;
+      proxy_pass http://odoo;
+  }
+
   #Specify a charset
   charset utf-8;
 
