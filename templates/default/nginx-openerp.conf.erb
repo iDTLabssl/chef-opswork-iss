@@ -112,7 +112,7 @@ server {
       index index.html;
   }
 
-  location ~* /web/database/manager {
+  location ~* /web/database {
     auth_basic "Restricted Area Login";
     auth_basic_user_file /etc/nginx/.htpasswd;
     proxy_pass http://odoo;
