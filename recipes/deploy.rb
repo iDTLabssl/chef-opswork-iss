@@ -78,7 +78,7 @@ apps.each do |app|
   end
 
   bash "correct_mount_directory_permission" do
-    command "chown {node[:deploy][:user]}:{node[:deploy][:group]} {node[:openerp][:data_dir]}; chmod 775 /mnt/data"
+    command "chown #{node[:deploy][:user]}:#{node[:deploy][:group]} #{node[:openerp][:data_dir]}; chmod 775 /mnt/data"
     only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
 
@@ -100,7 +100,7 @@ apps.each do |app|
 
 # lets ensure that the data dir is writable
   bash "correct_data_directory_permission" do
-    command "chown {node[:deploy][:user]}:{node[:deploy][:group]} {node[:openerp][:data_dir]}; chmod 775 {node[:openerp][:data_dir]}"
+    command "chown #{node[:deploy][:user]}:#{node[:deploy][:group]} #{node[:openerp][:data_dir]}; chmod 775 #{node[:openerp][:data_dir]}"
     only_if { ::File.exists?(node[:openerp][:data_dir]) }
   end
 
@@ -173,7 +173,7 @@ apps.each do |app|
   
 
   supervisor_service "openerp" do
-    command "python ./odoo.py"
+    command "python ./odoo.py --load=#{node[:openerp][:server_wide_modules]}"
     directory app_path
     user node[:deploy][:user]
     autostart true
