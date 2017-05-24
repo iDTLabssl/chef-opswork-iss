@@ -86,6 +86,7 @@ default[:openerp][:wkhtmltopdf_deb_url]  = "http://download.gna.org/wkhtmltopdf/
 default[:openerp][:update_command] = ''
 default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
 default[:openerp][:ssl_private] = '/etc/nginx/ssh/server.pem'
+default[:openerp][:list_db] = 'False'
 
 
 default[:deploy][:user] = 'ubuntu'
