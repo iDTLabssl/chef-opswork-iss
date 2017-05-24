@@ -71,6 +71,7 @@ default[:openerp][:aws_secret_key] = 'secret'
 default[:openerp][:route53_zone_id] = ''
 default[:openerp][:domain] = ''
 default[:openerp][:workers] = 3
+default[:openerp][:server_wide_modules] = 'web,web_kanban'
 default[:openerp][:limit_memory_hard] = 1500000000
 default[:openerp][:limit_memory_soft] = 1200000000
 default[:openerp][:max_cron_threads] = 2

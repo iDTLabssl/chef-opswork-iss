@@ -35,7 +35,7 @@ proxy_mode = False
 reportgz = False
 secure_cert_file = server.cert
 secure_pkey_file = server.pkey
-server_wide_modules = web,web_kanban
+server_wide_modules = <%=@openerp[:server_wide_modules]%>
 smtp_password = False
 smtp_port = 25
 smtp_server = localhost
@@ -71,3 +71,6 @@ aws_s3_bucket  = <%=@openerp[:aws_s3_bucket]%>
 route53_zone_id = <%=@openerp[:route53_zone_id]%>
 domain  = <%=@openerp[:domain]%>
 elastic_ip = <%=@openerp[:elastic_ip]%>
+
+[options-connector]
+channels = root:4
