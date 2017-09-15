@@ -17,7 +17,6 @@ default[:openerp][:apt_packages] = %w[
   python-yaml
   python-ldap
   python-pil
-  nodejs
   npm
   python-cups
   libfontenc1 
@@ -45,6 +44,7 @@ default[:openerp][:pip_packages] = %w[
   python-dateutil>=2.5.0
   zklib
   simplejson
+  xlsxwriter
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
@@ -81,7 +81,7 @@ default[:openerp][:log_level] = 'info'
 default[:openerp][:static_http_document_root] = '/var/www/'
 default[:openerp][:static_http_url_prefix]= '/static'
 default[:openerp][:openoffice_deb_url]  = 'http://freefr.dl.sourceforge.net/project/openofficeorg.mirror/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_Linux_x86-64_install-deb_en-US.tar.gz'
-default[:openerp][:wkhtmltopdf_deb_url]  = "http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
+default[:openerp][:wkhtmltopdf_deb_url]  = "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb"
 
 default[:openerp][:update_command] = ''
 default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
@@ -105,6 +105,7 @@ override['postgresql']['version'] = '9.3'
 override[:chef_ec2_ebs_snapshot][:description] = "saas.sl data directory Backup $(date +'%Y-%m-%d %H:%M:%S')"
 
 
+override['nodejs']['install_method'] = 'source'
 
 #set the ff in stack settings
 # node['supervisor']['inet_username']

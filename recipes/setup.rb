@@ -13,6 +13,7 @@ include_recipe "chef_nginx::http_stub_status_module"
 include_recipe "python"
 include_recipe 'postgresql::apt_pgdg_postgresql'
 include_recipe 'postgresql::client'
+include_recipe "nodejs"
 
 # lets set the python egg cache
 directory "/tmp/python-eggs" do
