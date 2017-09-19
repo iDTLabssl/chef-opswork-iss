@@ -45,6 +45,7 @@ default[:openerp][:pip_packages] = %w[
   zklib
   simplejson
   xlsxwriter
+  redis
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
