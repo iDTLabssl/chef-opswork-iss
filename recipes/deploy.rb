@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 include_recipe "openerp"
+include_recipe "nodejs"
 
 
 Chef::Log.info "About to search apps"
