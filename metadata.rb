@@ -4,7 +4,7 @@ maintainer_email 'salton.massally@gmail.com'
 license           "Apache 2.0"
 description      'Installs/Configures openerp-server on opswork ... assumes you already have a database running... we use rds'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.6.8'
+version          '0.6.9'
 
 depends "ohai"
 depends "supervisor"
@@ -15,6 +15,8 @@ depends "idt_infra_tools"
 depends 'tar'
 depends 'application'
 depends 'application_git'
+depends 'application_git'
+depends 'nodejs'
 
 
 
