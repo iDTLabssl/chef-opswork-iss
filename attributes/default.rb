@@ -89,6 +89,8 @@ default[:openerp][:ssl_public] = '/etc/nginx/ssh/server.crt'
 default[:openerp][:ssl_private] = '/etc/nginx/ssh/server.pem'
 default[:openerp][:list_db] = 'False'
 
+default[:openerp][:redis_host] = 'localhost'
+
 
 default[:deploy][:user] = 'ubuntu'
 default[:deploy][:group] = 'ubuntu'
