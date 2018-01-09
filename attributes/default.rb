@@ -46,6 +46,7 @@ default[:openerp][:pip_packages] = %w[
   simplejson
   xlsxwriter
   redis
+  boto3
 ]
   
 #default[:openerp][:database][:name] = node[:opsworks][:stack][:rds_instances][:db_name]
@@ -90,6 +91,8 @@ default[:openerp][:ssl_private] = '/etc/nginx/ssh/server.pem'
 default[:openerp][:list_db] = 'False'
 
 default[:openerp][:redis_host] = 'localhost'
+default[:openerp][:oauth2_access_token_expires_in] = 2629746000
+default[:openerp][:oauth2_refresh_token_expires_in] = 2629746000
 
 
 default[:deploy][:user] = 'ubuntu'
